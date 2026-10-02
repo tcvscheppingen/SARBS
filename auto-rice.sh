@@ -13,18 +13,7 @@ echo "Installing sway, its default utilities and the JetBrains Mono Nerd Font"
 sudo pacman -S --needed \
     sway swaybg swaylock swayidle wmenu foot \
     grim brightnessctl libpulse \
-    ttf-jetbrains-mono-nerd neovim thunar
-
-# LibreWolf is only in the AUR, so it needs an AUR helper. EndeavourOS ships
-# yay and CachyOS ships paru; on plain Arch install one of them first.
-if command -v yay >/dev/null; then
-    yay -S --needed librewolf-bin
-elif command -v paru >/dev/null; then
-    paru -S --needed librewolf-bin
-else
-    echo "No AUR helper (yay or paru) found, skipping LibreWolf."
-    echo "Install librewolf-bin from the AUR or change \$browser in ~/.config/sway/config"
-fi
+    ttf-jetbrains-mono-nerd neovim thunar librewolf
 
 # Back up any existing configs this theme replaces
 for dir in sway foot swaylock swaynag nvim; do

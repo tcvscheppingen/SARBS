@@ -18,8 +18,7 @@ The installation script is intended for Arch and Arch based distributions such a
 **Always check the contents of a script before running it**
 
 `auto-rice.sh` does the following:
-- Installs sway, swaybg, swaylock, swayidle, wmenu, foot, grim, brightnessctl, libpulse (for `pactl`), the JetBrains Mono Nerd Font, Neovim and Thunar with `pacman`. Packages you already have are skipped.
-- Installs LibreWolf (`librewolf-bin`) from the AUR with `yay` or `paru`. EndeavourOS ships `yay` and CachyOS ships `paru`; on plain Arch the step is skipped unless you install one of them first.
+- Installs sway, swaybg, swaylock, swayidle, wmenu, foot, grim, brightnessctl, libpulse (for `pactl`), the JetBrains Mono Nerd Font, Neovim, Thunar and LibreWolf with `pacman`. Packages you already have are skipped.
 - Backs up your existing `sway`, `foot`, `swaylock`, `swaynag` and `nvim` configs to `~/.config/gruvbox-rice-backup-<date>/`.
 - Moves `~/.sway/config` into that backup if it exists. Sway reads that file before `~/.config/sway/config`, so leaving it would hide this theme.
 - Copies the dotfiles into `~/.config`.
@@ -50,13 +49,10 @@ git clone https://github.com/tcvscheppingen/sway-dotfiles-gruvbox.git
 
 2. Install the packages:
 ```bash
-sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot grim brightnessctl libpulse ttf-jetbrains-mono-nerd neovim thunar
+sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot grim brightnessctl libpulse ttf-jetbrains-mono-nerd neovim thunar librewolf
 ```
 
-   (Optional) Install LibreWolf from the AUR, or change the browser in `~/.config/sway/config`:
-```bash
-yay -S librewolf-bin # or: paru -S librewolf-bin
-```
+   To use a different browser, change it in `~/.config/sway/config`:
 ```
 set $browser librewolf # Change default browser
 ```
