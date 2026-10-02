@@ -1,0 +1,269 @@
+# Gruvbox sway config
+#
+# Based on the default config Arch ships in /etc/sway/config, with the
+# key bindings from the Birmingham theme on top.
+#
+# Read `man 5 sway` for a complete reference.
+
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+# Your preferred terminal emulator
+set $term foot
+set $browser librewolf
+set $filemanager thunar
+# Your preferred application launcher (wmenu, the default sway launcher)
+set $menu wmenu-run -i -f 'JetBrainsMono Nerd Font 10' \
+    -N 282828 -n ebdbb2 \
+    -M d79921 -m 282828 \
+    -S fabd2f -s 282828
+
+### Gruvbox palette
+#
+set $bg0_hard #1d2021
+set $bg0      #282828
+set $bg1      #3c3836
+set $bg2      #504945
+set $fg       #ebdbb2
+set $gray     #928374
+set $red      #fb4934
+set $yellow   #fabd2f
+set $orange   #fe8019
+set $aqua     #8ec07c
+set $dyellow  #d79921
+
+### Appearance
+#
+font pango:JetBrainsMono Nerd Font 10
+
+gaps inner 10
+gaps outer 5
+
+default_border pixel 3
+default_floating_border normal
+
+# class                 border    background text   indicator child_border
+client.focused          $dyellow  $dyellow   $bg0   $orange   $dyellow
+client.focused_inactive $bg2      $bg2       $fg    $bg2      $bg2
+client.unfocused        $bg1      $bg1       $gray  $bg1      $bg1
+client.urgent           $red      $red       $bg0   $red      $red
+client.placeholder      $bg0      $bg0       $fg    $bg0      $bg0
+client.background       $bg0
+
+bindsym $mod+n border pixel 3
+bindsym $mod+m border normal
+
+### Output configuration
+#
+# Solid gruvbox background until a wallpaper is added. To use a wallpaper,
+# put it at ~/.config/sway/wallpaper.jpg and swap the two lines below.
+output * bg $bg0 solid_color
+# output * bg ~/.config/sway/wallpaper.jpg fill
+#
+# Example configuration:
+#
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+#
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+
+### Idle configuration
+#
+# Example configuration (swaylock picks up the gruvbox colors from
+# ~/.config/swaylock/config, so no -c flag is needed):
+#
+# exec swayidle -w \
+#          timeout 300 'swaylock -f' \
+#          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+#          before-sleep 'swaylock -f'
+#
+# This will lock your screen after 300 seconds of inactivity, then turn off
+# your displays after another 300 seconds, and turn your screens back on when
+# resumed. It will also lock your screen before your computer goes to sleep.
+
+### Input configuration
+#
+# Example configuration:
+#
+#   input type:touchpad {
+#       dwt enabled
+#       tap enabled
+#       natural_scroll enabled
+#       middle_emulation enabled
+#   }
+#
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+# Read `man 5 sway-input` for more information about this section.
+
+### Key bindings
+#
+# Basics:
+#
+    # Start a terminal
+    bindsym $mod+Return exec $term
+
+    # Start the browser
+    bindsym $mod+w exec $browser
+
+    # Start the file manager
+    bindsym $mod+r exec $filemanager
+
+    # Kill focused window
+    bindsym $mod+q kill
+
+    # Start your launcher
+    bindsym $mod+d exec $menu
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+c reload
+
+    # Exit sway (logs you out of your Wayland session)
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    # Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+#
+# Workspaces:
+#
+    # Switch to workspace
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+#
+# Layout stuff:
+#
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
+
+    # Switch the current container between different layout styles
+    #bindsym $mod+s layout stacking
+    #bindsym $mod+w layout tabbed
+    bindsym $mod+e layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+#
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+minus scratchpad show
+#
+# Resizing containers:
+#
+bindsym $mod+u resize shrink width 20px
+bindsym $mod+i resize grow height 20px
+bindsym $mod+o resize shrink height 20px
+bindsym $mod+p resize grow width 20px
+#
+# Utilities:
+#
+    # Special keys to adjust volume via PulseAudio
+    bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+    bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
+    bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+    bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
+    # Special keys to adjust brightness via brightnessctl
+    bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+    bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+    # Special key to take a screenshot with grim
+    bindsym Print exec grim
+
+#
+# Status Bar:
+#
+# Read `man 5 sway-bar` for more information about this section.
+# The bar sits flush against the top edge of the screen, without gaps.
+bar {
+    position top
+    gaps 0
+
+    # Battery (if present), memory use, the date and the current time
+    status_command sh ~/.config/sway/status.sh
+
+    colors {
+        background $bg0_hard
+        statusline $fg
+        separator  $bg2
+
+        # class            border    background text
+        focused_workspace  $dyellow  $dyellow   $bg0
+        active_workspace   $bg2      $bg2       $fg
+        inactive_workspace $bg0_hard $bg0_hard  $gray
+        urgent_workspace   $red      $red       $bg0
+        binding_mode       $aqua     $aqua      $bg0
+    }
+}
+
+include /etc/sway/config.d/*
