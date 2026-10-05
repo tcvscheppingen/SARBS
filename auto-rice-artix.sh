@@ -39,6 +39,13 @@ enable_user_service() {
     fi
 }
 
+# Update the keyrings before anything else. On an install that hasn't been
+# updated for a while, packages signed with newer keys otherwise fail with
+# "invalid or corrupted package (PGP signature)". The full upgrade below
+# follows right after, so this is not left as a partial upgrade.
+echo "Updating the Artix and Arch keyrings"
+sudo pacman -Sy --needed artix-keyring archlinux-keyring
+
 # wmenu is only in Arch's [extra], so enable it after the Artix repos, the
 # same way LARBS does
 echo "Enabling Arch's [extra] repo for wmenu"

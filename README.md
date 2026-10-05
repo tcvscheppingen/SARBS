@@ -39,6 +39,7 @@ The installation scripts are intended for Arch and Arch based distributions such
 ### Artix
 
 `auto-rice-artix.sh` does the same for Artix with dinit (`auto-rice.sh` refuses to run on Artix). The differences:
+- Updates `artix-keyring` and `archlinux-keyring` first, so packages signed with newer keys don't fail with signature errors on an install that hasn't been updated for a while.
 - Adds Arch's `[extra]` repo to `/etc/pacman.conf` with `artix-archlinux-support`, the same way [LARBS](https://github.com/LukeSmithxyz/LARBS) does, because wmenu is not in the Artix repos. Everything else comes from the Artix repos.
 - Installs the dinit services for elogind, D-Bus, NetworkManager and Bluetooth, and links them into `/etc/dinit.d/boot.d/` so they start on boot. NetworkManager is skipped if connman manages your network.
 - Installs turnstile, which runs your own dinit with PipeWire, PipeWire's PulseAudio replacement, WirePlumber and the D-Bus session bus when you log in. They are linked into `~/.config/dinit.d/boot.d/`.
@@ -56,7 +57,7 @@ git clone https://github.com/tcvscheppingen/sway-dotfiles-gruvbox.git
 cd sway-dotfiles-gruvbox
 chmod +x auto-rice.sh
 ```
-3. Run the installation script (on Artix, `chmod +x auto-rice-artix.sh` and run `./auto-rice-artix.sh` instead):
+3. Run the installation script as the user who will use sway, not as root; it asks for your password through `sudo` when it needs root (on Artix, `chmod +x auto-rice-artix.sh` and run `./auto-rice-artix.sh` instead):
 ```bash
 ./auto-rice.sh
 ```

@@ -1,6 +1,14 @@
 # Steps shared by auto-rice.sh, auto-rice-artix.sh and move-config-files.sh.
 # Those scripts set REPO_DIR and source this file; it is not run on its own.
 
+# The dotfiles, user services and login snippet go to the user who runs the
+# script, so it must be the user who will use sway. The scripts use sudo for
+# the parts that need root.
+if [ "$(id -u)" -eq 0 ]; then
+    echo "Run this as the user who will use sway, not as root. It uses sudo where it needs root." >&2
+    exit 1
+fi
+
 BACKUP_DIR="$HOME/.config/gruvbox-rice-backup-$(date +%Y%m%d-%H%M%S)"
 
 # Packages for Arch and Artix. Artix has all of them in its own repos except
