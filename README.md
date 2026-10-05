@@ -1,13 +1,14 @@
 # Sway Auto Rice - Gruvbox Theme
 
-This repo contains my dotfiles for Sway, swaybar, wmenu, Foot, swaylock, swaynag and a Neovim color theme, all using the [gruvbox](https://github.com/morhetz/gruvbox) dark palette.
+This repo contains my dotfiles for Sway, Waybar, wmenu, Foot, swaylock, swaynag and a Neovim color theme, all using the [gruvbox](https://github.com/morhetz/gruvbox) dark palette.
 
-It only uses sway and the utilities that come with it: swaybar instead of Waybar, and wmenu (the default sway launcher) instead of rofi. The key bindings are the default sway ones plus the remaps from the Birmingham theme (see [Key bindings](#key-bindings)).
+It sticks close to sway and the utilities that come with it: a minimal Waybar in the style of dwm, and wmenu (the default sway launcher) instead of rofi. The key bindings are the default sway ones plus the remaps from the Birmingham theme (see [Key bindings](#key-bindings)).
 
 The installation script is intended for Arch and Arch based distributions such as EndeavourOS and CachyOS, but the dotfiles can be used without the script.
 
 ## Requirements
 - Sway
+- Waybar
 - Foot
 - wmenu
 - JetBrains Mono Nerd Font
@@ -18,8 +19,8 @@ The installation script is intended for Arch and Arch based distributions such a
 **Always check the contents of a script before running it**
 
 `auto-rice.sh` does the following:
-- Installs sway, swaybg, swaylock, swayidle, wmenu, foot, grim, brightnessctl, libpulse (for `pactl`), the JetBrains Mono Nerd Font, Neovim, Thunar and LibreWolf with `pacman`. Packages you already have are skipped.
-- Backs up your existing `sway`, `foot`, `swaylock`, `swaynag` and `nvim` configs to `~/.config/gruvbox-rice-backup-<date>/`.
+- Installs sway, swaybg, swaylock, swayidle, wmenu, foot, waybar, grim, brightnessctl, libpulse (for `pactl`), the JetBrains Mono Nerd Font, Neovim, Thunar and LibreWolf with `pacman`. Packages you already have are skipped.
+- Backs up your existing `sway`, `waybar`, `foot`, `swaylock`, `swaynag` and `nvim` configs to `~/.config/gruvbox-rice-backup-<date>/`.
 - Moves `~/.sway/config` into that backup if it exists. Sway reads that file before `~/.config/sway/config`, so leaving it would hide this theme.
 - Copies the dotfiles into `~/.config`.
 
@@ -49,7 +50,7 @@ git clone https://github.com/tcvscheppingen/sway-dotfiles-gruvbox.git
 
 2. Install the packages:
 ```bash
-sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot grim brightnessctl libpulse ttf-jetbrains-mono-nerd neovim thunar librewolf
+sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot waybar grim brightnessctl libpulse ttf-jetbrains-mono-nerd neovim thunar librewolf
 ```
 
    To use a different browser, change it in `~/.config/sway/config`:
@@ -96,7 +97,7 @@ output * bg ~/.config/sway/wallpaper.jpg fill
 
 ## Status bar
 
-The swaybar runs `~/.config/sway/status.sh`, which shows the battery (on laptops), memory use, the date and the current time (`HH:MM:SS`). It only needs coreutils and awk, so no extra packages are required.
+Sway starts Waybar (`swaybar_command waybar`) instead of swaybar. It is a minimal, plain text bar in the style of dwm and slstatus: workspaces and the binding mode on the left, and on the right the wifi connection, the battery (on laptops), memory use, the date, the current time (`HH:MM:SS`), split by `|`, and the system tray. The config is in `~/.config/waybar/config.jsonc` and the colors are in `~/.config/waybar/style.css`.
 
 ## Palette
 

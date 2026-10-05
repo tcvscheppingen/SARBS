@@ -42,11 +42,17 @@ set $dyellow  #d79921
 #
 font pango:JetBrainsMono Nerd Font 10
 
+# Gaps and borders from Luke Smith's dwm (borderpx 3, gappiv 10,
+# gappoh 10, gappov 30). Sway has one inner gap and adds it to the outer
+# gaps at the screen edges, so this gives 10px between windows, 30px at
+# the left and right edges and 10px at the top and bottom.
 gaps inner 10
-gaps outer 5
+gaps horizontal 20
+gaps vertical 0
 
+# 3px borders without title bars, floating windows included
 default_border pixel 3
-default_floating_border normal
+default_floating_border pixel 3
 
 # class                 border    background text   indicator child_border
 client.focused          $dyellow  $dyellow   $bg0   $orange   $dyellow
@@ -243,27 +249,10 @@ bindsym $mod+p resize grow width 20px
 #
 # Status Bar:
 #
-# Read `man 5 sway-bar` for more information about this section.
-# The bar sits flush against the top edge of the screen, without gaps.
+# Sway starts waybar in place of swaybar, so it is restarted on reload.
+# Its layout and colors live in ~/.config/waybar/.
 bar {
-    position top
-    gaps 0
-
-    # Battery (if present), memory use, the date and the current time
-    status_command sh ~/.config/sway/status.sh
-
-    colors {
-        background $bg0_hard
-        statusline $fg
-        separator  $bg2
-
-        # class            border    background text
-        focused_workspace  $dyellow  $dyellow   $bg0
-        active_workspace   $bg2      $bg2       $fg
-        inactive_workspace $bg0_hard $bg0_hard  $gray
-        urgent_workspace   $red      $red       $bg0
-        binding_mode       $aqua     $aqua      $bg0
-    }
+    swaybar_command waybar
 }
 
 include /etc/sway/config.d/*

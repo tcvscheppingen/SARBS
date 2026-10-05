@@ -1,0 +1,71 @@
+/* Gruvbox waybar style
+ *
+ * Minimal, in the style of the dwm bar: flat colors, no borders, and the
+ * focused workspace drawn in the selection color.
+ */
+
+@define-color bg0      #282828;
+@define-color fg       #ebdbb2;
+@define-color gray     #928374;
+@define-color aqua     #8ec07c;
+@define-color dyellow  #d79921;
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 10pt;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+window#waybar {
+    background-color: @bg0;
+    color: @fg;
+}
+
+#workspaces button {
+    padding: 0 7px;
+    background: none;
+    color: @gray;
+}
+
+#workspaces button:hover {
+    background: none;
+    color: @fg;
+}
+
+#workspaces button.focused {
+    background-color: @dyellow;
+    color: @bg0;
+}
+
+/* Urgent workspaces are drawn inverted, like urgent tags in dwm */
+#workspaces button.urgent {
+    background-color: @fg;
+    color: @bg0;
+}
+
+#mode {
+    padding: 0 7px;
+    color: @aqua;
+}
+
+#network,
+#battery,
+#memory,
+#clock {
+    padding-right: 7px;
+}
+
+#tray {
+    padding: 0 7px 0 0;
+}
+
+#tray menu {
+    background-color: @bg0;
+    color: @fg;
+}

@@ -9,14 +9,14 @@ set -e
 REPO_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 BACKUP_DIR="$HOME/.config/gruvbox-rice-backup-$(date +%Y%m%d-%H%M%S)"
 
-echo "Installing sway, its default utilities and the JetBrains Mono Nerd Font"
+echo "Installing sway, its default utilities, waybar and the JetBrains Mono Nerd Font"
 sudo pacman -S --needed \
-    sway swaybg swaylock swayidle wmenu foot \
+    sway swaybg swaylock swayidle wmenu foot waybar \
     grim brightnessctl libpulse \
     ttf-jetbrains-mono-nerd neovim thunar librewolf
 
 # Back up any existing configs this theme replaces
-for dir in sway foot swaylock swaynag nvim; do
+for dir in sway waybar foot swaylock swaynag nvim; do
     if [ -e "$HOME/.config/$dir" ]; then
         mkdir -p "$BACKUP_DIR"
         cp -a "$HOME/.config/$dir" "$BACKUP_DIR/"

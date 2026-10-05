@@ -1,0 +1,67 @@
+// Gruvbox waybar config
+//
+// A plain text bar in the style of dwm and slstatus: workspaces and the
+// binding mode on the left, a status line split by "|" and the system
+// tray on the right.
+// Read `man 5 waybar` for a complete reference.
+{
+    "layer": "top",
+    "position": "top",
+    "spacing": 0,
+
+    "modules-left": ["sway/workspaces", "sway/mode"],
+    "modules-right": [
+        "network",
+        "battery",
+        "memory",
+        "clock#date",
+        "clock#time",
+        "tray"
+    ],
+
+    "sway/workspaces": {
+        "disable-scroll-wraparound": true
+    },
+
+    // Wifi, or the wired connection if there is no wifi
+    "network": {
+        "format-wifi": "wifi {essid} {signalStrength}%",
+        "format-ethernet": "eth {ifname}",
+        "format-disconnected": "wifi down",
+        "tooltip-format": "{ifname} {ipaddr}/{cidr}"
+    },
+
+    // Hidden on machines without a battery
+    "battery": {
+        "format": "| bat {capacity}%",
+        "format-charging": "| bat {capacity}% chr",
+        "format-plugged": "| bat {capacity}% ac",
+        "format-full": "| bat full",
+        "states": {
+            "warning": 20,
+            "critical": 10
+        },
+        "tooltip": false
+    },
+
+    "memory": {
+        "format": "| mem {used:0.1f}G",
+        "interval": 2
+    },
+
+    "clock#date": {
+        "format": "| {:%a %d %b}",
+        "tooltip": false
+    },
+
+    "clock#time": {
+        "format": "| {:%H:%M:%S}",
+        "interval": 1,
+        "tooltip": false
+    },
+
+    "tray": {
+        "icon-size": 14,
+        "spacing": 4
+    }
+}
