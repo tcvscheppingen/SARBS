@@ -43,6 +43,8 @@ chmod +x auto-rice.sh
 ```
 4. Reload Sway (`mod + shift + c`)
 
+If you prefer to install Sway and utilities manually, you can use `move-config-files.sh` to just move the config files to your home directory without installing anything.
+
 ## Manual installation
 
 1. Clone the repo:
