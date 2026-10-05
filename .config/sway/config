@@ -78,11 +78,8 @@ exec_always {
 }
 
 ### Output configuration
-#
-# Solid gruvbox background until a wallpaper is added. To use a wallpaper,
-# put it at ~/.config/sway/wallpaper.jpg and swap the two lines below.
-output * bg $bg0 solid_color
-# output * bg ~/.config/sway/wallpaper.jpg fill
+# Uses wallpaper from dotfiles repository.
+output * bg ~/.config/sway/wallpaper.jpg fill
 #
 # Example configuration:
 #

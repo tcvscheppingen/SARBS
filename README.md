@@ -186,18 +186,6 @@ swayidle locks the screen with swaylock after 5 minutes without input, turns the
 
 Sway sets the Adwaita cursor, and sets GTK apps such as Thunar and LibreWolf's dialogs to dark mode with `gsettings` every time it starts or reloads. Qt apps, such as the LXQt password prompt, keep their default look.
 
-## Wallpaper
-
-No wallpaper is included. Sway shows a solid gruvbox background (`#282828`) until you add one:
-
-1. Put your image at `~/.config/sway/wallpaper.jpg`.
-2. In `~/.config/sway/config`, comment out the `solid_color` line and uncomment the wallpaper line below it:
-```
-# output * bg $bg0 solid_color
-output * bg ~/.config/sway/wallpaper.jpg fill
-```
-3. Reload Sway (`mod + shift + c`).
-
 ## Notifications
 
 mako shows notifications in the top right corner, with a yellow border, or a red one for critical notifications. They disappear after 5 seconds; critical ones stay until you dismiss them. Click a notification or press `mod + Escape` to dismiss the newest one, or `mod + shift + Escape` to dismiss all of them. The config is in `~/.config/mako/config`. Run `makoctl reload` after changing it.
@@ -225,5 +213,5 @@ Sway starts Waybar (`swaybar_command waybar`) instead of swaybar. It is a minima
 | Orange | `#FE8019` |
 
 ## Credits
-
+Wallpaper [gruvbox wallpapers](https://gruvbox-wallpapers.pages.dev/)
 Gruvbox palette: [morhetz/gruvbox](https://github.com/morhetz/gruvbox)
