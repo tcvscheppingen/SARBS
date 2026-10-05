@@ -78,6 +78,11 @@ output * bg $bg0 solid_color
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 
+### Notifications
+#
+# mako shows notifications. Its colors live in ~/.config/mako/config.
+exec mako
+
 ### Idle configuration
 #
 # Example configuration (swaylock picks up the gruvbox colors from
@@ -137,6 +142,10 @@ output * bg $bg0 solid_color
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+    # Dismiss the newest notification, or all of them with shift
+    bindsym $mod+Escape exec makoctl dismiss
+    bindsym $mod+Shift+Escape exec makoctl dismiss --all
 #
 # Moving around:
 #

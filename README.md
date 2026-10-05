@@ -1,6 +1,6 @@
 # Sway Auto Rice - Gruvbox Theme
 
-This repo contains my dotfiles for Sway, Waybar, wmenu, Foot, swaylock, swaynag and a Neovim color theme, all using the [gruvbox](https://github.com/morhetz/gruvbox) dark palette.
+This repo contains my dotfiles for Sway, Waybar, mako, wmenu, Foot, swaylock, swaynag and a Neovim color theme, all using the [gruvbox](https://github.com/morhetz/gruvbox) dark palette.
 
 It sticks close to sway and the utilities that come with it: a minimal Waybar in the style of dwm, and wmenu (the default sway launcher) instead of rofi. The key bindings are the default sway ones plus the remaps from the Birmingham theme (see [Key bindings](#key-bindings)).
 
@@ -9,6 +9,7 @@ The installation script is intended for Arch and Arch based distributions such a
 ## Requirements
 - Sway
 - Waybar
+- mako
 - Foot
 - wmenu
 - JetBrains Mono Nerd Font
@@ -19,12 +20,13 @@ The installation script is intended for Arch and Arch based distributions such a
 **Always check the contents of a script before running it**
 
 `auto-rice.sh` does the following:
-- Installs sway, swaybg, swaylock, swayidle, wmenu, foot, waybar, grim, brightnessctl, `pactl`, the JetBrains Mono Nerd Font, Neovim, Thunar and LibreWolf. Packages you already have are skipped.
+- Installs sway, swaybg, swaylock, swayidle, wmenu, foot, waybar, mako, grim, brightnessctl, `pactl`, the JetBrains Mono Nerd Font, Neovim, Thunar and LibreWolf. Packages you already have are skipped.
   - On Arch it uses `pacman`.
   - On Fedora it uses `dnf`. It adds the [official LibreWolf repo](https://librewolf.net/installation/fedora/) to `/etc/yum.repos.d/librewolf.repo`, installs `pulseaudio-utils` for `pactl`, and downloads the JetBrains Mono Nerd Font from the [nerd-fonts releases](https://github.com/ryanoasis/nerd-fonts/releases) to `~/.local/share/fonts/`, because Fedora does not package it.
-- Backs up your existing `sway`, `waybar`, `foot`, `swaylock`, `swaynag` and `nvim` configs to `~/.config/gruvbox-rice-backup-<date>/`.
+- Backs up your existing `sway`, `waybar`, `mako`, `foot`, `swaylock`, `swaynag` and `nvim` configs to `~/.config/gruvbox-rice-backup-<date>/`.
 - Moves `~/.sway/config` into that backup if it exists. Sway reads that file before `~/.config/sway/config`, so leaving it would hide this theme.
 - Copies the dotfiles into `~/.config`.
+- Asks whether sway should start when you log in on TTY1. If you say yes, it adds this to your login shell's profile and backs up the old profile first (see [Starting sway on login](#starting-sway-on-login)).
 
 ## Installation with auto rice script
 
@@ -41,9 +43,9 @@ chmod +x auto-rice.sh
 ```bash
 ./auto-rice.sh
 ```
-4. Reload Sway (`mod + shift + c`)
+4. Reload Sway (`mod + shift + c`), or log out and log in again on TTY1 if you let the script start sway on login
 
-If you prefer to install Sway and utilities manually, you can use `move-config-files.sh` to just move the config files to your home directory without installing anything.
+If you prefer to install Sway and utilities manually, you can use `move-config-files.sh` to just move the config files to your home directory without installing anything. It does not set up [starting sway on login](#starting-sway-on-login).
 
 ## Manual installation
 
@@ -56,13 +58,13 @@ git clone https://github.com/tcvscheppingen/sway-dotfiles-gruvbox.git
 
    Arch:
 ```bash
-sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot waybar grim brightnessctl libpulse ttf-jetbrains-mono-nerd neovim thunar librewolf
+sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot waybar mako grim brightnessctl libpulse ttf-jetbrains-mono-nerd neovim thunar librewolf
 ```
 
    Fedora (LibreWolf needs [its own repo](https://librewolf.net/installation/fedora/), and the JetBrains Mono Nerd Font comes from the [nerd-fonts releases](https://github.com/ryanoasis/nerd-fonts/releases)):
 ```bash
 curl -fsSL https://repo.librewolf.net/librewolf.repo | sudo tee /etc/yum.repos.d/librewolf.repo
-sudo dnf install sway swaybg swaylock swayidle wmenu foot waybar grim brightnessctl pulseaudio-utils neovim thunar librewolf
+sudo dnf install sway swaybg swaylock swayidle wmenu foot waybar mako grim brightnessctl pulseaudio-utils neovim thunar librewolf
 mkdir -p ~/.local/share/fonts/JetBrainsMonoNerdFont
 curl -fL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz | tar -xJ -C ~/.local/share/fonts/JetBrainsMonoNerdFont
 fc-cache -f
@@ -81,6 +83,35 @@ cp -a .config/. ~/.config/
 ```
 
 4. If `~/.sway/config` exists, move or remove it. Otherwise sway will keep using it instead of `~/.config/sway/config`.
+
+5. Optionally, [start sway on login](#starting-sway-on-login).
+
+## Starting sway on login
+
+Without a display manager, you can start sway from your login shell's profile when you log in on TTY1, [as the Arch Wiki recommends](https://wiki.archlinux.org/title/Sway#Automatically_on_TTY_login). You only need to start sway: it starts Waybar (`swaybar_command waybar`) and mako (`exec mako`) itself.
+
+Add this to the end of your profile:
+```bash
+# Start sway on TTY1
+if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
+    exec sway
+fi
+```
+
+Which file is your profile depends on your login shell (`echo $SHELL`):
+- **bash**: `~/.bash_profile`. If you don't have that file but do have `~/.bash_login` or `~/.profile`, use that one instead. bash reads only the first of these it finds, so creating `~/.bash_profile` would stop it from reading `~/.profile`.
+- **zsh**: `~/.zprofile` (or `$ZDOTDIR/.zprofile` if you set `ZDOTDIR`).
+
+`auto-rice.sh` finds the right file for bash and zsh by itself. For other shells, add the equivalent to that shell's login config. For example, in fish, `~/.config/fish/config.fish`:
+```fish
+if status is-login; and test -z "$WAYLAND_DISPLAY"; and test "$XDG_VTNR" = 1
+    exec sway
+end
+```
+
+Other TTYs still give you a normal shell, so if sway fails to start you can switch to TTY2 (`ctrl + alt + F2`) to fix it.
+
+If you use a display manager (such as GDM or SDDM), skip this and choose the Sway session on its login screen instead.
 
 ## Key bindings
 
@@ -109,6 +140,10 @@ No wallpaper is included. Sway shows a solid gruvbox background (`#282828`) unti
 output * bg ~/.config/sway/wallpaper.jpg fill
 ```
 3. Reload Sway (`mod + shift + c`).
+
+## Notifications
+
+mako shows notifications in the top right corner, with a yellow border, or a red one for critical notifications. They disappear after 5 seconds; critical ones stay until you dismiss them. Click a notification or press `mod + Escape` to dismiss the newest one, or `mod + shift + Escape` to dismiss all of them. The config is in `~/.config/mako/config`. Run `makoctl reload` after changing it.
 
 ## Status bar
 

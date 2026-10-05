@@ -8,7 +8,7 @@ BACKUP_DIR="$HOME/.config/gruvbox-rice-backup-$(date +%Y%m%d-%H%M%S)"
 echo "Moving Sway dotfiles to Home directory"
 
 # Back up any existing configs this theme replaces
-for dir in sway waybar foot swaylock swaynag nvim; do
+for dir in sway waybar mako foot swaylock swaynag nvim; do
     if [ -e "$HOME/.config/$dir" ]; then
         mkdir -p "$BACKUP_DIR"
         cp -a "$HOME/.config/$dir" "$BACKUP_DIR/"
