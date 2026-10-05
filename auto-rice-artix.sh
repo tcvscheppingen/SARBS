@@ -46,22 +46,34 @@ enable_user_service() {
 echo "Updating the Artix and Arch keyrings"
 sudo pacman -Sy --needed artix-keyring archlinux-keyring
 
+# Install everything except wmenu from the Artix repos first. With [extra]
+# enabled, pacman asks for every shared library whether it should come from
+# Artix or Arch, because both have it.
+artix_packages=()
+for package in "${ARCH_PACKAGES[@]}"; do
+    if [ "$package" != wmenu ]; then
+        artix_packages+=("$package")
+    fi
+done
+
+# -Syu rather than -S, because a database refresh without an upgrade is a
+# partial upgrade
+echo "Installing sway, its utilities, PipeWire, waybar, mako, fonts and dinit services"
+sudo pacman -Syu --needed "${artix_packages[@]}" \
+    elogind-dinit dbus-dinit networkmanager-dinit bluez-dinit \
+    turnstile turnstile-dinit \
+    pipewire-dinit pipewire-pulse-dinit wireplumber-dinit
+
 # wmenu is only in Arch's [extra], so enable it after the Artix repos, the
-# same way LARBS does
+# same way LARBS does. Its libraries are all installed by now, so pacman has
+# nothing left to ask.
 echo "Enabling Arch's [extra] repo for wmenu"
 sudo pacman -S --needed artix-archlinux-support
 if ! grep -q '^\[extra\]' /etc/pacman.conf; then
     printf '\n[extra]\nInclude = /etc/pacman.d/mirrorlist-arch\n' | sudo tee -a /etc/pacman.conf > /dev/null
 fi
 sudo pacman-key --populate archlinux
-
-# -Syu rather than -S, because adding a repo needs a database refresh and a
-# refresh without an upgrade is a partial upgrade
-echo "Installing sway, its utilities, PipeWire, waybar, mako, fonts and dinit services"
-sudo pacman -Syu --needed "${ARCH_PACKAGES[@]}" \
-    elogind-dinit dbus-dinit networkmanager-dinit bluez-dinit \
-    turnstile turnstile-dinit \
-    pipewire-dinit pipewire-pulse-dinit wireplumber-dinit
+sudo pacman -Syu --needed wmenu
 
 # elogind-dinit enables elogind itself, through the logind service it links
 # into boot.d

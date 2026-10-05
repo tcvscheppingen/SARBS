@@ -12,10 +12,12 @@ fi
 BACKUP_DIR="$HOME/.config/gruvbox-rice-backup-$(date +%Y%m%d-%H%M%S)"
 
 # Packages for Arch and Artix. Artix has all of them in its own repos except
-# wmenu, which comes from Arch's [extra].
+# wmenu, which comes from Arch's [extra]. pipewire-jack answers pacman's
+# question which JACK to use; its default, jack2, would sit next to PipeWire
+# instead of using it.
 ARCH_PACKAGES=(
     sway swaybg swaylock swayidle wmenu foot waybar mako xorg-xwayland
-    pipewire pipewire-pulse wireplumber libpulse
+    pipewire pipewire-pulse pipewire-jack wireplumber libpulse
     xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit
     networkmanager network-manager-applet bluez bluez-utils blueman
     grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl

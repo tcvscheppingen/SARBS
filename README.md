@@ -77,7 +77,7 @@ git clone https://github.com/tcvscheppingen/sway-dotfiles-gruvbox.git
    Arch:
 ```bash
 sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot waybar mako xorg-xwayland \
-    pipewire pipewire-pulse wireplumber libpulse \
+    pipewire pipewire-pulse pipewire-jack wireplumber libpulse \
     xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit \
     networkmanager network-manager-applet bluez bluez-utils blueman \
     grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl \
