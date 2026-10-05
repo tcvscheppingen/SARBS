@@ -4,7 +4,7 @@ This repo contains my dotfiles for Sway, Waybar, wmenu, Foot, swaylock, swaynag 
 
 It sticks close to sway and the utilities that come with it: a minimal Waybar in the style of dwm, and wmenu (the default sway launcher) instead of rofi. The key bindings are the default sway ones plus the remaps from the Birmingham theme (see [Key bindings](#key-bindings)).
 
-The installation script is intended for Arch and Arch based distributions such as EndeavourOS and CachyOS, but the dotfiles can be used without the script.
+The installation script is intended for Arch and Arch based distributions such as EndeavourOS and CachyOS, and for Fedora, but the dotfiles can be used without the script.
 
 ## Requirements
 - Sway
@@ -12,14 +12,16 @@ The installation script is intended for Arch and Arch based distributions such a
 - Foot
 - wmenu
 - JetBrains Mono Nerd Font
-- Arch or an Arch based distribution (to install everything with the script)
+- Arch, an Arch based distribution or Fedora (to install everything with the script)
 - LibreWolf and Thunar (optional, for the browser and file manager shortcuts)
 
 ## What the script does
 **Always check the contents of a script before running it**
 
 `auto-rice.sh` does the following:
-- Installs sway, swaybg, swaylock, swayidle, wmenu, foot, waybar, grim, brightnessctl, libpulse (for `pactl`), the JetBrains Mono Nerd Font, Neovim, Thunar and LibreWolf with `pacman`. Packages you already have are skipped.
+- Installs sway, swaybg, swaylock, swayidle, wmenu, foot, waybar, grim, brightnessctl, `pactl`, the JetBrains Mono Nerd Font, Neovim, Thunar and LibreWolf. Packages you already have are skipped.
+  - On Arch it uses `pacman`.
+  - On Fedora it uses `dnf`. It adds the [official LibreWolf repo](https://librewolf.net/installation/fedora/) to `/etc/yum.repos.d/librewolf.repo`, installs `pulseaudio-utils` for `pactl`, and downloads the JetBrains Mono Nerd Font from the [nerd-fonts releases](https://github.com/ryanoasis/nerd-fonts/releases) to `~/.local/share/fonts/`, because Fedora does not package it.
 - Backs up your existing `sway`, `waybar`, `foot`, `swaylock`, `swaynag` and `nvim` configs to `~/.config/gruvbox-rice-backup-<date>/`.
 - Moves `~/.sway/config` into that backup if it exists. Sway reads that file before `~/.config/sway/config`, so leaving it would hide this theme.
 - Copies the dotfiles into `~/.config`.
@@ -48,9 +50,20 @@ chmod +x auto-rice.sh
 git clone https://github.com/tcvscheppingen/sway-dotfiles-gruvbox.git
 ```
 
-2. Install the packages:
+2. Install the packages.
+
+   Arch:
 ```bash
 sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot waybar grim brightnessctl libpulse ttf-jetbrains-mono-nerd neovim thunar librewolf
+```
+
+   Fedora (LibreWolf needs [its own repo](https://librewolf.net/installation/fedora/), and the JetBrains Mono Nerd Font comes from the [nerd-fonts releases](https://github.com/ryanoasis/nerd-fonts/releases)):
+```bash
+curl -fsSL https://repo.librewolf.net/librewolf.repo | sudo tee /etc/yum.repos.d/librewolf.repo
+sudo dnf install sway swaybg swaylock swayidle wmenu foot waybar grim brightnessctl pulseaudio-utils neovim thunar librewolf
+mkdir -p ~/.local/share/fonts/JetBrainsMonoNerdFont
+curl -fL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz | tar -xJ -C ~/.local/share/fonts/JetBrainsMonoNerdFont
+fc-cache -f
 ```
 
    To use a different browser, change it in `~/.config/sway/config`:
