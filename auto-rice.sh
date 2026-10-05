@@ -7,13 +7,16 @@
 set -e
 
 REPO_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-BACKUP_DIR="$HOME/.config/gruvbox-rice-backup-$(date +%Y%m%d-%H%M%S)"
+. "$REPO_DIR/common.sh"
+
+# Artix has pacman too, but no systemd, so it has its own script
+if grep -qs '^ID=artix' /etc/os-release; then
+    echo "This is Artix. Run ./auto-rice-artix.sh instead." >&2
+    exit 1
+fi
 
 install_arch() {
-    sudo pacman -S --needed \
-        sway swaybg swaylock swayidle wmenu foot waybar mako \
-        grim brightnessctl libpulse \
-        ttf-jetbrains-mono-nerd neovim thunar librewolf
+    sudo pacman -S --needed "${ARCH_PACKAGES[@]}"
 }
 
 install_fedora() {
@@ -25,9 +28,14 @@ install_fedora() {
 
     # pactl comes from pulseaudio-utils on Fedora
     sudo dnf install \
-        sway swaybg swaylock swayidle wmenu foot waybar mako \
-        grim brightnessctl pulseaudio-utils \
-        neovim thunar librewolf curl tar xz
+        sway swaybg swaylock swayidle wmenu foot waybar mako xorg-x11-server-Xwayland \
+        pipewire pipewire-pulseaudio wireplumber pulseaudio-utils \
+        xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit \
+        NetworkManager network-manager-applet bluez blueman \
+        grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl \
+        google-noto-sans-fonts google-noto-color-emoji-fonts \
+        adwaita-icon-theme adwaita-cursor-theme dconf \
+        neovim Thunar librewolf curl tar xz
 
     # Fedora only packages the plain JetBrains Mono, so get the Nerd Font
     # from the nerd-fonts releases
@@ -39,7 +47,21 @@ install_fedora() {
     fi
 }
 
-echo "Installing sway, its default utilities, waybar, mako and the JetBrains Mono Nerd Font"
+# Start NetworkManager and Bluetooth on boot. Not with --now, so the
+# network doesn't drop while the script is running.
+enable_services_systemd() {
+    # NetworkManager would fight with systemd-networkd over the network,
+    # so leave a working networkd setup alone
+    if systemctl is-enabled --quiet systemd-networkd 2> /dev/null; then
+        echo "systemd-networkd manages your network, so NetworkManager is not enabled."
+        echo "Disable systemd-networkd and enable NetworkManager to use the wifi tray icon."
+    else
+        sudo systemctl enable NetworkManager
+    fi
+    sudo systemctl enable bluetooth
+}
+
+echo "Installing sway, its utilities, PipeWire, waybar, mako and fonts"
 if command -v pacman > /dev/null; then
     install_arch
 elif command -v dnf > /dev/null; then
@@ -48,73 +70,18 @@ else
     echo "No pacman or dnf found. Install the packages from the README yourself." >&2
     exit 1
 fi
+enable_services_systemd
 
-# Back up any existing configs this theme replaces
-for dir in sway waybar mako foot swaylock swaynag nvim; do
-    if [ -e "$HOME/.config/$dir" ]; then
-        mkdir -p "$BACKUP_DIR"
-        cp -a "$HOME/.config/$dir" "$BACKUP_DIR/"
-    fi
-done
+# Create ~/Pictures and the other user folders. grim saves screenshots
+# to ~/Pictures.
+xdg-user-dirs-update
 
-# sway reads ~/.sway/config before ~/.config/sway/config, so an old config
-# there (for example from the Birmingham theme) would hide this one
-if [ -e "$HOME/.sway/config" ]; then
-    mkdir -p "$BACKUP_DIR/.sway"
-    mv "$HOME/.sway/config" "$BACKUP_DIR/.sway/config"
-fi
+install_dotfiles
 
-mkdir -p "$HOME/.config"
-cp -a "$REPO_DIR/.config/." "$HOME/.config/"
-
-fc-cache -f
-
-# Optionally start sway from the login shell profile on TTY1, as the Arch
-# Wiki recommends. Sway then starts waybar and mako itself.
-login_shell="$(basename "${SHELL:-}")"
-case "$login_shell" in
-    bash)
-        # bash reads only the first of these that exists, so add to that one
-        profile="$HOME/.bash_profile"
-        for file in "$HOME/.bash_profile" "$HOME/.bash_login" "$HOME/.profile"; do
-            if [ -e "$file" ]; then
-                profile="$file"
-                break
-            fi
-        done
-        ;;
-    zsh)
-        profile="${ZDOTDIR:-$HOME}/.zprofile"
-        ;;
-    *)
-        profile=""
-        ;;
-esac
-
-if [ -z "$profile" ]; then
-    echo "Your login shell ($login_shell) is not bash or zsh. See the README to start sway on login."
-elif grep -qs "exec sway" "$profile"; then
-    echo "$profile already starts sway"
-else
-    read -r -p "Start sway automatically when you log in on TTY1 (adds it to $profile)? [y/N] " answer || true
-    case "$answer" in
-        [yY]*)
-            if [ -e "$profile" ]; then
-                mkdir -p "$BACKUP_DIR"
-                cp -a "$profile" "$BACKUP_DIR/"
-            fi
-            cat >> "$profile" << 'PROFILE'
-
-# Start sway on TTY1 (added by the Gruvbox sway rice)
-if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
+offer_sway_autostart 'if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
     exec sway
-fi
-PROFILE
-            echo "Added sway to $profile"
-            ;;
-    esac
-fi
+fi'
 
-[ -d "$BACKUP_DIR" ] && echo "Your previous configs were backed up to $BACKUP_DIR"
+report_backup
 echo "Installed Gruvbox dotfiles successfully"
-echo "Reload sway with mod + shift + c, or log in to a sway session"
+echo "Reboot, or log out and log in again, so PipeWire, NetworkManager and Bluetooth start"

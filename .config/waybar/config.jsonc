@@ -12,6 +12,7 @@
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-right": [
         "network",
+        "pulseaudio",
         "battery",
         "memory",
         "clock#date",
@@ -29,6 +30,15 @@
         "format-ethernet": "eth {ifname}",
         "format-disconnected": "wifi down",
         "tooltip-format": "{ifname} {ipaddr}/{cidr}"
+    },
+
+    // Volume of the default output. Click to mute.
+    "pulseaudio": {
+        "format": "| vol {volume}%",
+        "format-bluetooth": "| vol {volume}% bt",
+        "format-muted": "| vol mute",
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "tooltip": false
     },
 
     // Hidden on machines without a battery

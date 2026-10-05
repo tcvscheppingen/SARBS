@@ -65,6 +65,18 @@ client.background       $bg0
 bindsym $mod+n border pixel 3
 bindsym $mod+m border normal
 
+# Adwaita cursor, and dark GTK apps (Thunar, LibreWolf's dialogs). GTK reads
+# these from gsettings on Wayland, so set them every time sway (re)loads.
+seat seat0 xcursor_theme Adwaita 24
+set $gnome-schema org.gnome.desktop.interface
+exec_always {
+    gsettings set $gnome-schema color-scheme 'prefer-dark'
+    gsettings set $gnome-schema gtk-theme 'Adwaita-dark'
+    gsettings set $gnome-schema icon-theme 'Adwaita'
+    gsettings set $gnome-schema cursor-theme 'Adwaita'
+    gsettings set $gnome-schema cursor-size 24
+}
+
 ### Output configuration
 #
 # Solid gruvbox background until a wallpaper is added. To use a wallpaper,
@@ -78,24 +90,31 @@ output * bg $bg0 solid_color
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 
-### Notifications
+### Autostart
 #
+# Let D-Bus services such as the portals (screen sharing, file pickers) find
+# this Wayland session. On systemd distros they also need it in systemd, hence
+# --systemd there; Artix with dinit has no systemd.
+exec dbus-update-activation-environment $([ -d /run/systemd/system ] && echo --systemd) WAYLAND_DISPLAY DISPLAY SWAYSOCK I3SOCK XDG_CURRENT_DESKTOP
 # mako shows notifications. Its colors live in ~/.config/mako/config.
 exec mako
+# Asks for your password when an app needs root (mounting drives in Thunar,
+# for example). Fedora keeps the agent in /usr/libexec.
+exec lxqt-policykit-agent || /usr/libexec/lxqt-policykit-agent
+# Wifi and Bluetooth icons in the waybar tray
+exec nm-applet --indicator
+exec blueman-applet
 
 ### Idle configuration
 #
-# Example configuration (swaylock picks up the gruvbox colors from
-# ~/.config/swaylock/config, so no -c flag is needed):
-#
-# exec swayidle -w \
-#          timeout 300 'swaylock -f' \
-#          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#          before-sleep 'swaylock -f'
-#
-# This will lock your screen after 300 seconds of inactivity, then turn off
-# your displays after another 300 seconds, and turn your screens back on when
-# resumed. It will also lock your screen before your computer goes to sleep.
+# Lock the screen after 5 minutes of inactivity, turn the displays off
+# 5 minutes later and back on when you return, and lock the screen before
+# the computer goes to sleep. swaylock picks up the gruvbox colors from
+# ~/.config/swaylock/config.
+exec swayidle -w \
+         timeout 300 'swaylock -f' \
+         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+         before-sleep 'swaylock -f'
 
 ### Input configuration
 #
@@ -142,6 +161,9 @@ exec mako
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+    # Lock the screen
+    bindsym $mod+x exec swaylock -f
 
     # Dismiss the newest notification, or all of them with shift
     bindsym $mod+Escape exec makoctl dismiss
@@ -252,8 +274,16 @@ bindsym $mod+p resize grow width 20px
     # Special keys to adjust brightness via brightnessctl
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
-    # Special key to take a screenshot with grim
+    # Media keys via playerctl
+    bindsym --locked XF86AudioPlay exec playerctl play-pause
+    bindsym --locked XF86AudioNext exec playerctl next
+    bindsym --locked XF86AudioPrev exec playerctl previous
+    # Screenshots with grim. Shift selects an area with slurp, and ctrl
+    # copies to the clipboard instead of saving to ~/Pictures.
     bindsym Print exec grim
+    bindsym Shift+Print exec grim -g "$(slurp)"
+    bindsym Ctrl+Print exec grim - | wl-copy
+    bindsym Ctrl+Shift+Print exec grim -g "$(slurp)" - | wl-copy
 
 #
 # Status Bar:
