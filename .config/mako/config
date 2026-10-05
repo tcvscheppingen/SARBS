@@ -1,8 +1,4 @@
-# Gruvbox mako config
-#
-# Sway starts mako on login (see ~/.config/sway/config).
-# Run `makoctl reload` after changing this file.
-# Read `man 5 mako` for a complete reference.
+# Run `makoctl reload` after changing this file
 
 font=JetBrainsMono Nerd Font 10
 background-color=#282828

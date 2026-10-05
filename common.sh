@@ -41,7 +41,7 @@ install_dotfiles() {
     done
 
     # sway reads ~/.sway/config before ~/.config/sway/config, so an old config
-    # there (for example from the Birmingham theme) would hide this one
+    # there would hide this one
     if [ -e "$HOME/.sway/config" ]; then
         mkdir -p "$BACKUP_DIR/.sway"
         mv "$HOME/.sway/config" "$BACKUP_DIR/.sway/config"

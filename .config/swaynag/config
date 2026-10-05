@@ -1,5 +1,3 @@
-# Gruvbox colors for swaynag (e.g. the exit prompt and config errors)
-
 font=JetBrainsMono Nerd Font 10
 
 [warning]

@@ -1,10 +1,3 @@
--- Gruvbox
--- ~/.config/nvim/colors/gruvbox.lua
---
--- A self-contained gruvbox dark colorscheme, so Neovim matches the
--- rest of the sway setup without installing any plugins.
--- Palette: https://github.com/morhetz/gruvbox
-
 vim.cmd.highlight("clear")
 
 if vim.fn.exists("syntax_on") == 1 then

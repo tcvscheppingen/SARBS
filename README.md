@@ -4,7 +4,7 @@
 
 This repo contains my dotfiles for Sway, Waybar, mako, wmenu, Foot, swaylock, swaynag and a Neovim color theme, all using the [gruvbox](https://github.com/morhetz/gruvbox) dark palette.
 
-It sticks close to sway and the utilities that come with it: a minimal Waybar in the style of dwm, and wmenu (the default sway launcher) instead of rofi. The key bindings are the default sway ones plus the remaps from the Birmingham theme (see [Key bindings](#key-bindings)).
+It sticks close to sway and the utilities that come with it: a minimal Waybar in the style of dwm, and wmenu (the default sway launcher) instead of rofi. The key bindings are the default sway ones plus a few additions (see [Key bindings](#key-bindings)).
 
 The installation scripts are intended for Arch and Arch based distributions such as EndeavourOS and CachyOS, Fedora, and Artix with dinit, but the dotfiles can be used without them.
 
@@ -153,7 +153,7 @@ If you use a display manager (such as GDM or SDDM), skip this and choose the Swa
 
 ## Key bindings
 
-On top of the default sway bindings, these come from the Birmingham theme:
+On top of the default sway bindings, this theme adds:
 
 | Keys | Action |
 |---|---|
@@ -164,19 +164,14 @@ On top of the default sway bindings, these come from the Birmingham theme:
 | `mod + m` | Normal window border with a title bar |
 | `mod + u` / `mod + p` | Shrink / grow the window width |
 | `mod + o` / `mod + i` | Shrink / grow the window height |
-
-To make room for these, `mod + w` no longer switches to tabbed layout, `mod + s` no longer switches to stacking layout, and the `mod + r` resize mode is gone.
-
-This theme adds:
-
-| Keys | Action |
-|---|---|
 | `mod + x` | Lock the screen |
 | `mod + Escape` / `mod + shift + Escape` | Dismiss the newest / all notifications |
 | `Print` | Screenshot of all screens, saved to `~/Pictures` |
 | `shift + Print` | Screenshot of an area you select, saved to `~/Pictures` |
 | `ctrl + Print` / `ctrl + shift + Print` | The same, but copied to the clipboard |
 | Play, next and previous keys | Control music and video players (playerctl) |
+
+To make room for these, `mod + w` no longer switches to tabbed layout, `mod + s` no longer switches to stacking layout, and the `mod + r` resize mode is gone.
 
 ## Screen locking
 
@@ -213,5 +208,5 @@ Sway starts Waybar (`swaybar_command waybar`) instead of swaybar. It is a minima
 | Orange | `#FE8019` |
 
 ## Credits
-Wallpaper [gruvbox wallpapers](https://gruvbox-wallpapers.pages.dev/)
-Gruvbox palette: [morhetz/gruvbox](https://github.com/morhetz/gruvbox)
+- Wallpaper [gruvbox wallpapers](https://gruvbox-wallpapers.pages.dev/)
+- Gruvbox palette: [morhetz/gruvbox](https://github.com/morhetz/gruvbox)

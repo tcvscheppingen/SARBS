@@ -1,9 +1,3 @@
-// Gruvbox waybar config
-//
-// A plain text bar in the style of dwm and slstatus: workspaces and the
-// binding mode on the left, a status line split by "|" and the system
-// tray on the right.
-// Read `man 5 waybar` for a complete reference.
 {
     "layer": "top",
     "position": "top",
@@ -24,7 +18,6 @@
         "disable-scroll-wraparound": true
     },
 
-    // Wifi, or the wired connection if there is no wifi
     "network": {
         "format-wifi": "wifi {essid} {signalStrength}%",
         "format-ethernet": "eth {ifname}",
@@ -32,7 +25,6 @@
         "tooltip-format": "{ifname} {ipaddr}/{cidr}"
     },
 
-    // Volume of the default output. Click to mute.
     "pulseaudio": {
         "format": "| vol {volume}%",
         "format-bluetooth": "| vol {volume}% bt",
