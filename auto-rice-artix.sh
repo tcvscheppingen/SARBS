@@ -56,8 +56,9 @@ sudo pacman -Syu --needed "${ARCH_PACKAGES[@]}" \
     turnstile turnstile-dinit \
     pipewire-dinit pipewire-pulse-dinit wireplumber-dinit
 
+# elogind-dinit enables elogind itself, through the logind service it links
+# into boot.d
 enable_service dbus
-enable_service elogind
 enable_service turnstiled
 enable_service bluetoothd
 # NetworkManager would fight with connman over the network, so leave a
