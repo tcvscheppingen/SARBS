@@ -52,11 +52,11 @@ The installation scripts are intended for Arch and Arch based distributions such
 
 1. Clone the repo:
 ```bash
-git clone https://github.com/tcvscheppingen/sway-dotfiles-gruvbox.git
+git clone https://github.com/tcvscheppingen/SARBS.git
 ```
 2. Make the auto rice script executable:
 ```bash
-cd sway-dotfiles-gruvbox
+cd SARBS
 chmod +x auto-rice.sh
 ```
 3. Run the installation script as the user who will use sway, not as root; it asks for your password through `sudo` when it needs root (on Artix, `chmod +x auto-rice-artix.sh` and run `./auto-rice-artix.sh` instead):
@@ -71,7 +71,7 @@ If you prefer to install Sway and utilities manually, you can use `move-config-f
 
 1. Clone the repo:
 ```bash
-git clone https://github.com/tcvscheppingen/sway-dotfiles-gruvbox.git
+git clone https://github.com/tcvscheppingen/SARBS.git
 ```
 
 2. Install the packages.
@@ -115,7 +115,7 @@ set $browser librewolf # Change default browser
 
 3. Move the dotfiles into your home folder:
 ```bash
-cd sway-dotfiles-gruvbox # Or wherever you cloned the repo
+cd SARBS # Or wherever you cloned the repo
 mkdir -p ~/.config ~/.local/bin
 cp -a .config/. ~/.config/
 cp -a .local/bin/. ~/.local/bin/
