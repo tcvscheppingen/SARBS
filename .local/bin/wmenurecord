@@ -1,0 +1,146 @@
+#!/bin/sh
+# Screen, audio and webcam recording from a menu. A Wayland version of
+# dmenurecord from Luke Smith's voidrice: https://github.com/LukeSmithxyz/voidrice
+#
+# Usage:
+#   wmenurecord             ask what to record, or offer to end the running recording
+#   wmenurecord screencast  record the focused display and the microphone
+#   wmenurecord video       record the focused display
+#   wmenurecord audio       record the microphone
+#   wmenurecord kill        end the running recording
+#
+# Recordings go to ~/Videos.
+
+menu() {
+    wmenu -i -p "$1" -f 'JetBrainsMono Nerd Font 10' \
+        -N 282828 -n ebdbb2 -M d79921 -m 282828 -S fabd2f -s 282828
+}
+
+state="${XDG_RUNTIME_DIR:-/tmp}/recording"
+dir=$(xdg-user-dir VIDEOS 2> /dev/null || echo "$HOME")
+mkdir -p "$dir"
+
+# Fedora's ffmpeg has no H.264 encoder, so record VP9 there
+if ffmpeg -hide_banner -encoders 2> /dev/null | grep -q ' libx264 '; then
+    wf_codec='-c libx264 -p preset=veryfast -p crf=20'
+    ffmpeg_codec='-c:v libx264 -preset veryfast -crf 20'
+else
+    wf_codec='-c libvpx-vp9 -p deadline=realtime -p cpu-used=8 -p crf=32 -p b=0'
+    ffmpeg_codec='-c:v libvpx-vp9 -deadline realtime -cpu-used 8 -crf 32 -b:v 0'
+fi
+
+# Shown in waybar by the custom/recording module, which listens for signal 9
+updateicon() {
+    echo "$1" > "$state.icon"
+    pkill -RTMIN+9 waybar
+}
+
+# Run a recorder in the background and remember it for `wmenurecord kill`
+start() {
+    file=$1
+    icon=$2
+    shift 2
+    "$@" > /dev/null 2>&1 &
+    pid=$!
+    sleep 1
+    if ! kill -0 "$pid" 2> /dev/null; then
+        notify-send -u critical 'Recording failed to start.' "$*"
+        exit 1
+    fi
+    echo "$pid $file" > "$state"
+    updateicon "$icon"
+}
+
+killrecording() {
+    read -r pid file < "$state"
+    # SIGINT lets ffmpeg and wf-recorder finish writing the file. wf-recorder
+    # only notices it with the next frame, which on a still screen can take a
+    # moment, so wait for it to exit before reporting the file as saved.
+    kill -INT "$pid" 2> /dev/null
+    tries=0
+    while kill -0 "$pid" 2> /dev/null && [ "$tries" -lt 20 ]; do
+        sleep 0.5
+        tries=$((tries + 1))
+    done
+    rm -f "$state"
+    updateicon ''
+    if kill -0 "$pid" 2> /dev/null; then
+        notify-send -u critical 'Recording did not stop.' "Stop it with: kill $pid"
+    else
+        notify-send 'Recording saved.' "$file"
+    fi
+}
+
+focused_output() {
+    swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name'
+}
+
+# shellcheck disable=SC2086
+screencast() {
+    file="$dir/screencast-$(date '+%y%m%d-%H%M-%S').mkv"
+    start "$file" '| rec mic' wf-recorder -o "$(focused_output)" --audio $wf_codec -f "$file"
+}
+
+# shellcheck disable=SC2086
+video() {
+    file="$dir/video-$(date '+%y%m%d-%H%M-%S').mkv"
+    start "$file" '| rec' wf-recorder -o "$(focused_output)" $wf_codec -f "$file"
+}
+
+# shellcheck disable=SC2086
+videoselected() {
+    geometry=$(slurp) || exit 1
+    file="$dir/box-$(date '+%y%m%d-%H%M-%S').mkv"
+    start "$file" '| rec' wf-recorder -g "$geometry" $wf_codec -f "$file"
+}
+
+audio() {
+    file="$dir/audio-$(date '+%y%m%d-%H%M-%S').flac"
+    start "$file" '| mic' ffmpeg -f pulse -i default -c:a flac "$file"
+}
+
+# shellcheck disable=SC2086
+webcam() {
+    file="$dir/webcam-$(date '+%y%m%d-%H%M-%S').mkv"
+    start "$file" '| cam' ffmpeg -f v4l2 -video_size "$1" -i /dev/video0 $ffmpeg_codec "$file"
+}
+
+askrecording() {
+    case "$(printf 'screencast\nvideo\nvideo selected\naudio\nwebcam\nwebcam (hi-def)\n' | menu 'Select recording style:')" in
+        'screencast') screencast ;;
+        'video') video ;;
+        'video selected') videoselected ;;
+        'audio') audio ;;
+        'webcam') webcam 640x480 ;;
+        'webcam (hi-def)') webcam 1920x1080 ;;
+        *) exit 1 ;;
+    esac
+}
+
+asktoend() {
+    response=$(printf 'No\nYes\n' | menu 'Recording still active. End recording?')
+    [ "$response" = 'Yes' ] && killrecording
+}
+
+# Forget a recording that stopped by itself, so the menu doesn't offer to end it
+if [ -f "$state" ]; then
+    read -r pid file < "$state"
+    if ! kill -0 "$pid" 2> /dev/null; then
+        rm -f "$state"
+        updateicon ''
+    fi
+fi
+
+case "$1" in
+    screencast) screencast ;;
+    video) video ;;
+    audio) audio ;;
+    kill) [ -f "$state" ] && killrecording ;;
+    *)
+        if [ -f "$state" ]; then
+            asktoend
+        else
+            askrecording
+        fi
+        ;;
+esac

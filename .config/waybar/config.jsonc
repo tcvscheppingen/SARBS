@@ -6,6 +6,7 @@
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-right": [
         "network",
+        "custom/recording",
         "pulseaudio",
         "battery",
         "memory",
@@ -23,6 +24,13 @@
         "format-ethernet": "eth {ifname}",
         "format-disconnected": "wifi down",
         "tooltip-format": "{ifname} {ipaddr}/{cidr}"
+    },
+
+    // Set by ~/.local/bin/wmenurecord, which sends signal 9 when it changes
+    "custom/recording": {
+        "exec": "cat \"$XDG_RUNTIME_DIR/recording.icon\" 2> /dev/null",
+        "interval": "once",
+        "signal": 9
     },
 
     "pulseaudio": {

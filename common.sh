@@ -21,6 +21,7 @@ ARCH_PACKAGES=(
     xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit
     networkmanager network-manager-applet bluez bluez-utils blueman
     grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify
+    wf-recorder ffmpeg
     ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
     adwaita-icon-theme adwaita-cursors dconf
     neovim thunar librewolf

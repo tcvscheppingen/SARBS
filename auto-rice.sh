@@ -33,6 +33,7 @@ install_fedora() {
         xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit \
         NetworkManager network-manager-applet bluez blueman \
         grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify \
+        wf-recorder /usr/bin/ffmpeg \
         google-noto-sans-fonts google-noto-color-emoji-fonts \
         adwaita-icon-theme adwaita-cursor-theme dconf \
         neovim Thunar librewolf curl tar xz

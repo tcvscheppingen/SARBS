@@ -2,6 +2,7 @@
 @define-color fg       #ebdbb2;
 @define-color gray     #928374;
 @define-color aqua     #8ec07c;
+@define-color red      #fb4934;
 @define-color dyellow  #d79921;
 
 * {
@@ -53,6 +54,11 @@ window#waybar {
 #memory,
 #clock {
     padding-right: 7px;
+}
+
+#custom-recording {
+    padding-right: 7px;
+    color: @red;
 }
 
 #tray {

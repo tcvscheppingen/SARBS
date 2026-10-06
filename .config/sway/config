@@ -188,6 +188,9 @@ bindsym Print exec grim
 bindsym Shift+Print exec grim -g "$(slurp)"
 bindsym Ctrl+Print exec grim - | wl-copy
 bindsym Ctrl+Shift+Print exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+Print exec ~/.local/bin/wmenurecord
+bindsym $mod+Shift+Print exec ~/.local/bin/wmenurecord kill
+bindsym $mod+Delete exec ~/.local/bin/wmenurecord kill
 
 ### Status bar
 
