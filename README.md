@@ -1,4 +1,4 @@
-# SARBS - Sway Auto Rice Bootstrapping Script
+# Sway Auto Rice Bootstrapping Script (SARBS)
 
 <img width="1728" height="1117" alt="Screenshot 2026-10-05 at 20 02 57" src="https://github.com/user-attachments/assets/d31fcb47-a7ff-4945-86d2-9da251c47d6b" />
 
