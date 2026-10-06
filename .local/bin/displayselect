@@ -1,0 +1,74 @@
+#!/bin/sh
+# Menu for choosing which displays to use and how to arrange them. A Wayland
+# version of displayselect from Luke Smith's voidrice:
+# https://github.com/LukeSmithxyz/voidrice
+# Changes last until sway restarts. For a permanent layout, add output lines
+# to ~/.config/sway/config.
+
+menu() {
+    wmenu -i -p "$1" -f 'JetBrainsMono Nerd Font 10' \
+        -N 282828 -n ebdbb2 -M d79921 -m 282828 -S fabd2f -s 282828
+}
+
+outputs=$(swaymsg -t get_outputs | jq -r '.[].name')
+
+# Width of an enabled output after scaling, which is what positions use
+width() {
+    swaymsg -t get_outputs | jq -r --arg name "$1" '.[] | select(.name == $name) | .rect.width'
+}
+
+only() {
+    swaymsg output "$1" enable > /dev/null
+    for output in $outputs; do
+        if [ "$output" != "$1" ]; then
+            swaymsg output "$output" disable > /dev/null
+        fi
+    done
+}
+
+# Place the given outputs next to each other, from left to right
+side_by_side() {
+    for output in "$@"; do
+        swaymsg output "$output" enable > /dev/null
+    done
+    x=0
+    for output in "$@"; do
+        swaymsg output "$output" position "$x" 0 > /dev/null
+        x=$((x + $(width "$output")))
+    done
+}
+
+multi_monitor() {
+    remaining=$outputs
+    order=
+    while [ "$(echo "$remaining" | wc -l)" -gt 1 ]; do
+        pick=$(echo "$remaining" | menu 'Next display from the left:') || exit 1
+        echo "$remaining" | grep -qx "$pick" || exit 1
+        order="$order $pick"
+        remaining=$(echo "$remaining" | grep -vx "$pick")
+    done
+    # shellcheck disable=SC2086
+    side_by_side $order $remaining
+}
+
+if [ "$(echo "$outputs" | wc -l)" -lt 2 ]; then
+    only "$outputs"
+    notify-send 'Only one display detected.' 'Using it with its current settings.'
+    exit
+fi
+
+choices=$(printf '%s\nmulti-monitor' "$outputs")
+if command -v wdisplays > /dev/null; then
+    choices=$(printf '%s\nmanual selection' "$choices")
+fi
+
+chosen=$(echo "$choices" | menu 'Select display arrangement:') || exit 1
+case "$chosen" in
+    'manual selection') exec wdisplays ;;
+    'multi-monitor') multi_monitor ;;
+    *)
+        # A typo here would otherwise turn every display off
+        echo "$outputs" | grep -qx "$chosen" || exit 1
+        only "$chosen"
+        ;;
+esac

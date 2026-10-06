@@ -20,7 +20,7 @@ ARCH_PACKAGES=(
     pipewire pipewire-pulse pipewire-jack wireplumber libpulse
     xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit
     networkmanager network-manager-applet bluez bluez-utils blueman
-    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl
+    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify
     ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
     adwaita-icon-theme adwaita-cursors dconf
     neovim thunar librewolf
@@ -49,6 +49,14 @@ install_dotfiles() {
 
     mkdir -p "$HOME/.config"
     cp -a "$REPO_DIR/.config/." "$HOME/.config/"
+
+    for script in "$REPO_DIR"/.local/bin/*; do
+        if [ -e "$HOME/.local/bin/$(basename "$script")" ]; then
+            backup "$HOME/.local/bin/$(basename "$script")"
+        fi
+    done
+    mkdir -p "$HOME/.local/bin"
+    cp -a "$REPO_DIR/.local/bin/." "$HOME/.local/bin/"
 
     fc-cache -f
 }

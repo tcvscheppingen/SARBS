@@ -114,6 +114,8 @@ floating_modifier $mod normal
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 bindsym $mod+x exec swaylock -f
+bindsym $mod+BackSpace exec ~/.local/bin/sysact
+bindsym $mod+F3 exec ~/.local/bin/displayselect
 bindsym $mod+Escape exec makoctl dismiss
 bindsym $mod+Shift+Escape exec makoctl dismiss --all
 

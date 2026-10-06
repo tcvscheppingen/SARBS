@@ -1,0 +1,45 @@
+#!/bin/sh
+# Menu for locking, leaving sway, sleep, reboot and shutdown. A Wayland version
+# of sysact from Luke Smith's voidrice: https://github.com/LukeSmithxyz/voidrice
+
+menu() {
+    wmenu -i -p "$1" -f 'JetBrainsMono Nerd Font 10' \
+        -N 282828 -n ebdbb2 -M d79921 -m 282828 -S fabd2f -s 282828
+}
+
+# On Artix, elogind's loginctl does what systemctl does on systemd distros
+if [ -d /run/systemd/system ]; then
+    ctl=systemctl
+else
+    ctl=loginctl
+fi
+
+lock() {
+    was_muted=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -c MUTED)
+    playerctl --all-players pause 2> /dev/null
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ 1
+    swaylock
+    if [ "$was_muted" -eq 0 ]; then
+        wpctl set-mute @DEFAULT_AUDIO_SINK@ 0
+    fi
+}
+
+# Turn the displays off until the next key press or mouse movement. $PPID
+# expands in the shell swayidle starts, so it is swayidle itself.
+# shellcheck disable=SC2016
+display_off() {
+    swayidle -w timeout 1 'swaymsg "output * power off"' \
+        resume 'swaymsg "output * power on"; kill $PPID' &
+}
+
+case "$(printf 'lock\nleave sway\nrenew sway\nsleep\nreboot\nshutdown\ndisplay off\n' | menu 'Action:')" in
+    'lock') lock ;;
+    'leave sway') swaymsg exit ;;
+    'renew sway') swaymsg reload ;;
+    # swayidle locks the screen before the laptop sleeps
+    'sleep') $ctl suspend -i ;;
+    'reboot') $ctl reboot -i ;;
+    'shutdown') $ctl poweroff -i ;;
+    'display off') display_off ;;
+    *) exit 1 ;;
+esac

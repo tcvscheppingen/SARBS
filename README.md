@@ -26,7 +26,7 @@ The installation scripts are intended for Arch and Arch based distributions such
   - Sway and its utilities: sway, swaybg, swaylock, swayidle, wmenu, foot, waybar, mako and Xwayland (for X11 apps)
   - Sound: PipeWire with its PulseAudio replacement and WirePlumber, plus `pactl` for the volume keys
   - Desktop plumbing: the wlr and GTK portals (for screen sharing and file pickers), an LXQt polkit agent (for password prompts), NetworkManager, Bluetooth (bluez and blueman) and xdg-user-dirs
-  - Tools: grim, slurp and wl-clipboard for screenshots, brightnessctl and playerctl
+  - Tools: grim, slurp and wl-clipboard for screenshots, brightnessctl and playerctl, and jq and libnotify for the `sysact` and `displayselect` menus
   - Fonts and themes: the JetBrains Mono Nerd Font, Noto fonts and emoji (so websites don't show empty boxes), and the Adwaita icons and cursor
   - Apps: Neovim, Thunar and LibreWolf
   - On Arch it uses `pacman`.
@@ -35,7 +35,7 @@ The installation scripts are intended for Arch and Arch based distributions such
 - Moves `~/.sway/config` into that backup if it exists. Sway reads that file before `~/.config/sway/config`, so leaving it would hide this theme.
 - Enables NetworkManager and Bluetooth on boot. NetworkManager is skipped if `systemd-networkd` manages your network, because the two would conflict.
 - Creates `~/Pictures` and the other user folders.
-- Copies the dotfiles into `~/.config`.
+- Copies the dotfiles into `~/.config`, and the `sysact` and `displayselect` scripts into `~/.local/bin`.
 - Asks whether sway should start when you log in on TTY1. If you say yes, it adds this to your login shell's profile and backs up the old profile first (see [Starting sway on login](#starting-sway-on-login)).
 
 ### Artix
@@ -82,7 +82,7 @@ sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot waybar mako xor
     pipewire pipewire-pulse pipewire-jack wireplumber libpulse \
     xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit \
     networkmanager network-manager-applet bluez bluez-utils blueman \
-    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl \
+    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify \
     ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji \
     adwaita-icon-theme adwaita-cursors dconf \
     neovim thunar librewolf
@@ -97,7 +97,7 @@ sudo dnf install sway swaybg swaylock swayidle wmenu foot waybar mako xorg-x11-s
     pipewire pipewire-pulseaudio wireplumber pulseaudio-utils \
     xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit \
     NetworkManager network-manager-applet bluez blueman \
-    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl \
+    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify \
     google-noto-sans-fonts google-noto-color-emoji-fonts \
     adwaita-icon-theme adwaita-cursor-theme dconf \
     neovim Thunar librewolf
@@ -116,8 +116,9 @@ set $browser librewolf # Change default browser
 3. Move the dotfiles into your home folder:
 ```bash
 cd sway-dotfiles-gruvbox # Or wherever you cloned the repo
-mkdir -p ~/.config
+mkdir -p ~/.config ~/.local/bin
 cp -a .config/. ~/.config/
+cp -a .local/bin/. ~/.local/bin/
 ```
 
 4. If `~/.sway/config` exists, move or remove it. Otherwise sway will keep using it instead of `~/.config/sway/config`.
@@ -165,6 +166,8 @@ On top of the default sway bindings, this theme adds:
 | `mod + u` / `mod + p` | Shrink / grow the window width |
 | `mod + o` / `mod + i` | Shrink / grow the window height |
 | `mod + x` | Lock the screen |
+| `mod + Backspace` | System menu: lock, leave or reload sway, sleep, reboot, shutdown, display off (`sysact`) |
+| `mod + F3` | Display menu: use one display, or place several side by side (`displayselect`) |
 | `mod + Escape` / `mod + shift + Escape` | Dismiss the newest / all notifications |
 | `Print` | Screenshot of all screens, saved to `~/Pictures` |
 | `shift + Print` | Screenshot of an area you select, saved to `~/Pictures` |
@@ -210,3 +213,4 @@ Sway starts Waybar (`swaybar_command waybar`) instead of swaybar. It is a minima
 ## Credits
 - Wallpaper [gruvbox wallpapers](https://gruvbox-wallpapers.pages.dev/)
 - Gruvbox palette: [morhetz/gruvbox](https://github.com/morhetz/gruvbox)
+- `sysact` and `displayselect` are Wayland versions of the scripts of the same name in Luke Smith's [voidrice](https://github.com/LukeSmithxyz/voidrice) (from [LARBS](https://larbs.xyz))
