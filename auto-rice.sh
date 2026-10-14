@@ -16,7 +16,7 @@ if grep -qs '^ID=artix' /etc/os-release; then
 fi
 
 install_arch() {
-    sudo pacman -S --needed "${ARCH_PACKAGES[@]}"
+    sudo pacman -S --needed --noconfirm "${ARCH_PACKAGES[@]}"
 }
 
 install_fedora() {
@@ -79,7 +79,7 @@ xdg-user-dirs-update
 
 install_dotfiles
 
-offer_sway_autostart 'if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
+offer_login 'if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
     exec sway
 fi'
 

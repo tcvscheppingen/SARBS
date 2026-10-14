@@ -36,7 +36,7 @@ The installation scripts are intended for Arch and Arch based distributions such
 - Enables NetworkManager and Bluetooth on boot. NetworkManager is skipped if `systemd-networkd` manages your network, because the two would conflict.
 - Creates `~/Pictures` and the other user folders.
 - Copies the dotfiles into `~/.config`, and the `sysact`, `displayselect` and `wmenurecord` scripts into `~/.local/bin`.
-- Asks whether sway should start when you log in on TTY1. If you say yes, it adds this to your login shell's profile and backs up the old profile first (see [Starting sway on login](#starting-sway-on-login)).
+- Asks how sway should start: automatically when you log in on TTY1 (it adds that to your login shell's profile and backs up the old profile first), or from a graphical login screen: LightDM with a minimal gruvbox greeter (see [Starting sway on login](#starting-sway-on-login)).
 
 ### Artix
 
@@ -153,6 +153,15 @@ end
 Other TTYs still give you a normal shell, so if sway fails to start you can switch to TTY2 (`ctrl + alt + F2`) to fix it.
 
 If you use a display manager (such as GDM or SDDM), skip this and choose the Sway session on its login screen instead.
+
+### A graphical login screen
+
+If you answer `2` to the script's question, it installs LightDM with lightdm-gtk-greeter instead, kept minimal: the wallpaper, a login box in dark Adwaita and a panel with only the host name, the clock and the power menu (`/etc/lightdm/lightdm-gtk-greeter.conf`). Sway is the default session. LightDM is not enabled when another display manager already starts on boot.
+
+To answer the question in advance, for example from another script, set `RICE_LOGIN` to `tty`, `dm` or `none`:
+```bash
+RICE_LOGIN=dm ./auto-rice.sh
+```
 
 ## Key bindings
 
