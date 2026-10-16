@@ -9,5 +9,5 @@ echo "Moving Sway dotfiles to Home directory"
 install_dotfiles
 
 report_backup
-echo "Installed Gruvbox dotfiles successfully"
+echo "Installed the SARBS dotfiles successfully"
 echo "Reload sway with mod + shift + c, or log in to a sway session"

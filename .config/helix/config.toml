@@ -1,0 +1,5 @@
+theme = "monolith"
+
+[editor]
+# Use the theme's exact colors even when the terminal doesn't advertise true color
+true-color = true

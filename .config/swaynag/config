@@ -1,17 +1,17 @@
 font=JetBrainsMono Nerd Font 10
 
 [warning]
-background=282828
-border=d79921
-border-bottom=d79921
-button-background=3c3836
-text=ebdbb2
-button-text=fabd2f
+background=121212
+border=8a7d74
+border-bottom=8a7d74
+button-background=2a2a2a
+text=d0d0d0
+button-text=d0d0d0
 
 [error]
-background=282828
-border=fb4934
-border-bottom=fb4934
-button-background=3c3836
-text=ebdbb2
-button-text=fb4934
+background=121212
+border=a8665e
+border-bottom=a8665e
+button-background=2a2a2a
+text=d0d0d0
+button-text=a8665e

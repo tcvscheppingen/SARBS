@@ -1,24 +1,24 @@
 font=JetBrainsMono Nerd Font
-color=282828
+color=121212
 indicator-radius=100
-indicator-thickness=10
+indicator-thickness=6
 
-inside-color=282828
-inside-clear-color=282828
-inside-ver-color=282828
-inside-wrong-color=282828
+inside-color=121212
+inside-clear-color=121212
+inside-ver-color=121212
+inside-wrong-color=121212
 
-ring-color=504945
-ring-clear-color=83a598
-ring-ver-color=d79921
-ring-wrong-color=fb4934
+ring-color=2a2a2a
+ring-clear-color=7a7a7a
+ring-ver-color=8a7d74
+ring-wrong-color=a8665e
 
-key-hl-color=fabd2f
-bs-hl-color=fe8019
+key-hl-color=8a7d74
+bs-hl-color=7a7a7a
 separator-color=00000000
 line-uses-inside
 
-text-color=ebdbb2
-text-clear-color=83a598
-text-ver-color=d79921
-text-wrong-color=fb4934
+text-color=d0d0d0
+text-clear-color=7a7a7a
+text-ver-color=8a7d74
+text-wrong-color=a8665e

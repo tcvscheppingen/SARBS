@@ -3,7 +3,14 @@
     "position": "top",
     "spacing": 0,
 
-    "modules-left": ["sway/workspaces", "sway/mode"],
+    // Floats 10px from the top, lined up with the windows 30px from the
+    // sides. Waybar reserves its height plus these margins, so windows stay
+    // below it with sway's 10px gap.
+    "margin-top": 10,
+    "margin-left": 30,
+    "margin-right": 30,
+
+    "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
     "modules-right": [
         "network",
         "custom/recording",
@@ -15,38 +22,45 @@
         "tray"
     ],
 
+    // Labels are small grey caps before each value; the grey slash before a
+    // module separates it from the one to its left
     "sway/workspaces": {
         "disable-scroll-wraparound": true
     },
 
+    "sway/window": {
+        "max-length": 60,
+        "tooltip": false
+    },
+
     "network": {
-        "format-wifi": "wifi {essid} {signalStrength}%",
-        "format-ethernet": "eth {ifname}",
-        "format-disconnected": "wifi down",
+        "format-wifi": "<span size='small' color='#7a7a7a'>WIFI</span> {essid} {signalStrength}%",
+        "format-ethernet": "<span size='small' color='#7a7a7a'>ETH</span> {ifname}",
+        "format-disconnected": "<span size='small' color='#7a7a7a'>NET</span> down",
         "tooltip-format": "{ifname} {ipaddr}/{cidr}"
     },
 
     // Set by ~/.local/bin/wmenurecord, which sends signal 9 when it changes
     "custom/recording": {
-        "exec": "cat \"$XDG_RUNTIME_DIR/recording.icon\" 2> /dev/null",
+        "exec": "icon=$(tr a-z A-Z < \"$XDG_RUNTIME_DIR/recording.icon\" 2> /dev/null) && [ -n \"$icon\" ] && echo \"<span color='#3a3a3a'>/</span>  $icon\"",
         "interval": "once",
         "signal": 9
     },
 
     "pulseaudio": {
-        "format": "| vol {volume}%",
-        "format-bluetooth": "| vol {volume}% bt",
-        "format-muted": "| vol mute",
+        "format": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>VOL</span> {volume}%",
+        "format-bluetooth": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>VOL</span> {volume}% bt",
+        "format-muted": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>VOL</span> mute",
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
         "tooltip": false
     },
 
     // Hidden on machines without a battery
     "battery": {
-        "format": "| bat {capacity}%",
-        "format-charging": "| bat {capacity}% chr",
-        "format-plugged": "| bat {capacity}% ac",
-        "format-full": "| bat full",
+        "format": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>BAT</span> {capacity}%",
+        "format-charging": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>BAT</span> {capacity}% chr",
+        "format-plugged": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>BAT</span> {capacity}% ac",
+        "format-full": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>BAT</span> full",
         "states": {
             "warning": 20,
             "critical": 10
@@ -55,23 +69,23 @@
     },
 
     "memory": {
-        "format": "| mem {used:0.1f}G",
+        "format": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>MEM</span> {used:0.1f}G",
         "interval": 2
     },
 
     "clock#date": {
-        "format": "| {:%a %d %b}",
+        "format": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>DATE</span> {:%a %d %b}",
         "tooltip": false
     },
 
     "clock#time": {
-        "format": "| {:%H:%M:%S}",
+        "format": "<span color='#3a3a3a'>/</span>  <span size='small' color='#7a7a7a'>TIME</span> {:%H:%M:%S}",
         "interval": 1,
         "tooltip": false
     },
 
     "tray": {
         "icon-size": 14,
-        "spacing": 4
+        "spacing": 6
     }
 }

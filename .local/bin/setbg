@@ -1,0 +1,39 @@
+#!/bin/sh
+# Sets the wallpaper. A Wayland version of setbg from Luke Smith's voidrice:
+# https://github.com/LukeSmithxyz/voidrice
+#
+#   setbg              set the wallpaper ~/.local/share/bg links to again
+#   setbg image.jpg    use that image
+#   setbg directory    use a random image from that directory
+#   setbg -s ...       the same, without a notification
+#
+# Sway loads ~/.local/share/bg when it starts (output * bg in the sway
+# config), so the choice stays after a restart.
+
+bgloc="${XDG_DATA_HOME:-$HOME/.local/share}/bg"
+
+while getopts "s" o; do case "$o" in
+    s) silent=1 ;;
+    *) exit 1 ;;
+esac done
+shift $((OPTIND - 1))
+
+notify() {
+    [ -z "$silent" ] && notify-send "$@"
+}
+
+if [ -n "$1" ]; then
+    trueloc="$(readlink -f "$1")"
+    case "$(file --mime-type -b "$trueloc")" in
+        image/*)
+            ln -sf "$trueloc" "$bgloc" && notify -i "$bgloc" "Changing wallpaper..." ;;
+        inode/directory)
+            image="$(find "$trueloc" -iregex '.*\.\(jpg\|jpeg\|png\)' -type f | shuf -n 1)"
+            [ -n "$image" ] && ln -sf "$image" "$bgloc" && notify -i "$bgloc" "Random wallpaper chosen." ;;
+        *)
+            notify "🖼️ Error" "Not a valid image or directory."
+            exit 1 ;;
+    esac
+fi
+
+swaymsg output '*' bg "$(readlink -f "$bgloc")" fill > /dev/null

@@ -13,7 +13,7 @@
 
 menu() {
     wmenu -i -p "$1" -f 'JetBrainsMono Nerd Font 10' \
-        -N 282828 -n ebdbb2 -M d79921 -m 282828 -S fabd2f -s 282828
+        -N 121212 -n d0d0d0 -M 8a7d74 -m 121212 -S 8a7d74 -s 121212
 }
 
 state="${XDG_RUNTIME_DIR:-/tmp}/recording"
@@ -78,31 +78,31 @@ focused_output() {
 # shellcheck disable=SC2086
 screencast() {
     file="$dir/screencast-$(date '+%y%m%d-%H%M-%S').mkv"
-    start "$file" '| rec mic' wf-recorder -o "$(focused_output)" --audio $wf_codec -f "$file"
+    start "$file" 'rec mic' wf-recorder -o "$(focused_output)" --audio $wf_codec -f "$file"
 }
 
 # shellcheck disable=SC2086
 video() {
     file="$dir/video-$(date '+%y%m%d-%H%M-%S').mkv"
-    start "$file" '| rec' wf-recorder -o "$(focused_output)" $wf_codec -f "$file"
+    start "$file" 'rec' wf-recorder -o "$(focused_output)" $wf_codec -f "$file"
 }
 
 # shellcheck disable=SC2086
 videoselected() {
     geometry=$(slurp) || exit 1
     file="$dir/box-$(date '+%y%m%d-%H%M-%S').mkv"
-    start "$file" '| rec' wf-recorder -g "$geometry" $wf_codec -f "$file"
+    start "$file" 'rec' wf-recorder -g "$geometry" $wf_codec -f "$file"
 }
 
 audio() {
     file="$dir/audio-$(date '+%y%m%d-%H%M-%S').flac"
-    start "$file" '| mic' ffmpeg -f pulse -i default -c:a flac "$file"
+    start "$file" 'mic' ffmpeg -f pulse -i default -c:a flac "$file"
 }
 
 # shellcheck disable=SC2086
 webcam() {
     file="$dir/webcam-$(date '+%y%m%d-%H%M-%S').mkv"
-    start "$file" '| cam' ffmpeg -f v4l2 -video_size "$1" -i /dev/video0 $ffmpeg_codec "$file"
+    start "$file" 'cam' ffmpeg -f v4l2 -video_size "$1" -i /dev/video0 $ffmpeg_codec "$file"
 }
 
 askrecording() {

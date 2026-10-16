@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Sway Auto Rice - Gruvbox Theme
+# Sway Auto Rice Bootstrapping Script (SARBS)
 # For Arch and Arch based distributions (EndeavourOS, CachyOS, ...) and Fedora.
 # Always check the contents of a script before running it.
 
@@ -32,7 +32,7 @@ install_fedora() {
         pipewire pipewire-pulseaudio wireplumber pulseaudio-utils \
         xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit \
         NetworkManager network-manager-applet bluez blueman \
-        grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify \
+        grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify file \
         wf-recorder /usr/bin/ffmpeg \
         google-noto-sans-fonts google-noto-color-emoji-fonts \
         adwaita-icon-theme adwaita-cursor-theme dconf \
@@ -84,5 +84,5 @@ offer_login 'if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR"
 fi'
 
 report_backup
-echo "Installed Gruvbox dotfiles successfully"
+echo "Installed the SARBS dotfiles successfully"
 echo "Reboot, or log out and log in again, so PipeWire, NetworkManager and Bluetooth start"

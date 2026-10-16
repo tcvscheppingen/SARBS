@@ -1,0 +1,44 @@
+#!/bin/sh
+# Screenshot menu: a selected area, the focused window or the whole screen,
+# saved to ~/Pictures or copied to the clipboard. A Wayland version of
+# maimpick from Luke Smith's voidrice: https://github.com/LukeSmithxyz/voidrice
+#
+# "copy selected image to text" reads the text in an area with tesseract and
+# copies it; it is only offered when tesseract is installed.
+
+menu() {
+    wmenu -i -l 8 -p "$1" -f 'JetBrainsMono Nerd Font 10' \
+        -N 121212 -n d0d0d0 -M 8a7d74 -m 121212 -S 8a7d74 -s 121212
+}
+
+dir=$(xdg-user-dir PICTURES 2> /dev/null || echo "$HOME")
+mkdir -p "$dir"
+name="$(date '+%y%m%d-%H%M-%S').png"
+
+# The focused window's position and size, in slurp's format
+focused_window() {
+    swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | .rect | "\(.x),\(.y) \(.width)x\(.height)"'
+}
+
+options='a selected area
+current window
+full screen
+a selected area (copy)
+current window (copy)
+full screen (copy)'
+if command -v tesseract > /dev/null; then
+    options="$options
+copy selected image to text"
+fi
+
+case "$(printf '%s\n' "$options" | menu 'Screenshot which area?')" in
+    'a selected area') area=$(slurp) && grim -g "$area" "$dir/pic-selected-$name" ;;
+    'current window') grim -g "$(focused_window)" "$dir/pic-window-$name" ;;
+    'full screen') grim "$dir/pic-full-$name" ;;
+    'a selected area (copy)') area=$(slurp) && grim -g "$area" - | wl-copy -t image/png ;;
+    'current window (copy)') grim -g "$(focused_window)" - | wl-copy -t image/png ;;
+    'full screen (copy)') grim - | wl-copy -t image/png ;;
+    'copy selected image to text')
+        area=$(slurp) && grim -g "$area" - | tesseract stdin - -l eng 2> /dev/null | wl-copy ;;
+    *) exit 1 ;;
+esac

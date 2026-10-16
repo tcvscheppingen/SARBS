@@ -1,10 +1,12 @@
 # Sway Auto Rice Bootstrapping Script (SARBS)
 
-<img width="1728" height="1117" alt="Screenshot 2026-10-05 at 20 02 57" src="https://github.com/user-attachments/assets/d31fcb47-a7ff-4945-86d2-9da251c47d6b" />
+![sway with Neovim, a shell and a floating fastfetch window](screenshot.png)
 
-This repo contains my dotfiles for Sway, Waybar, mako, wmenu, Foot, swaylock, swaynag and a Neovim color theme, all using the [gruvbox](https://github.com/morhetz/gruvbox) dark palette.
+This repo contains my dotfiles for Sway, Waybar, mako, wmenu, Foot, swaylock, swaynag and Neovim and Helix color themes, all in Monolith: a flat, mostly black, grey and white palette with one concrete accent, made around the brutalist wallpaper (see [Palette](#palette)).
 
-It sticks close to sway and the utilities that come with it: a minimal Waybar in the style of dwm, and wmenu (the default sway launcher) instead of rofi. The key bindings are the default sway ones plus a few additions (see [Key bindings](#key-bindings)).
+![Opening terminals, the launcher, switching workspaces and floating a window](demo.gif)
+
+It sticks close to sway and the utilities that come with it: a flat Waybar strip floating above the windows, and wmenu (the default sway launcher) instead of rofi. The key bindings are the default sway ones plus a few additions (see [Key bindings](#key-bindings)).
 
 The installation scripts are intended for Arch and Arch based distributions such as EndeavourOS and CachyOS, Fedora, and Artix with dinit, but the dotfiles can be used without them.
 
@@ -31,12 +33,12 @@ The installation scripts are intended for Arch and Arch based distributions such
   - Apps: Neovim, Thunar and LibreWolf
   - On Arch it uses `pacman`.
   - On Fedora it uses `dnf`. It adds the [official LibreWolf repo](https://librewolf.net/installation/rhel/) to `/etc/yum.repos.d/librewolf.repo`, installs `pulseaudio-utils` for `pactl`, and downloads the JetBrains Mono Nerd Font from the [nerd-fonts releases](https://github.com/ryanoasis/nerd-fonts/releases) to `~/.local/share/fonts/`, because Fedora does not package it.
-- Backs up your existing `sway`, `waybar`, `mako`, `foot`, `swaylock`, `swaynag` and `nvim` configs to `~/.config/gruvbox-rice-backup-<date>/`.
+- Backs up your existing `sway`, `waybar`, `mako`, `foot`, `swaylock`, `swaynag`, `nvim` and `helix` configs to `~/.config/sarbs-backup-<date>/`.
 - Moves `~/.sway/config` into that backup if it exists. Sway reads that file before `~/.config/sway/config`, so leaving it would hide this theme.
 - Enables NetworkManager and Bluetooth on boot. NetworkManager is skipped if `systemd-networkd` manages your network, because the two would conflict.
 - Creates `~/Pictures` and the other user folders.
-- Copies the dotfiles into `~/.config`, and the `sysact`, `displayselect` and `wmenurecord` scripts into `~/.local/bin`.
-- Asks how sway should start: automatically when you log in on TTY1 (it adds that to your login shell's profile and backs up the old profile first), or from a graphical login screen: LightDM with a minimal gruvbox greeter (see [Starting sway on login](#starting-sway-on-login)).
+- Copies the dotfiles into `~/.config`, and the `sysact`, `displayselect`, `wmenurecord`, `grimpick`, `setbg` and `sound-fix` scripts into `~/.local/bin`. It links `~/.local/share/bg` to the wallpaper, unless you already picked one with `setbg`.
+- Asks how sway should start: automatically when you log in on TTY1 (it adds that to your login shell's profile and backs up the old profile first), or from a graphical login screen: LightDM with a minimal greeter (see [Starting sway on login](#starting-sway-on-login)).
 
 ### Artix
 
@@ -82,7 +84,7 @@ sudo pacman -S --needed sway swaybg swaylock swayidle wmenu foot waybar mako xor
     pipewire pipewire-pulse pipewire-jack wireplumber libpulse \
     xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit \
     networkmanager network-manager-applet bluez bluez-utils blueman \
-    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify \
+    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify file \
     wf-recorder ffmpeg \
     ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji \
     adwaita-icon-theme adwaita-cursors dconf \
@@ -98,7 +100,7 @@ sudo dnf install sway swaybg swaylock swayidle wmenu foot waybar mako xorg-x11-s
     pipewire pipewire-pulseaudio wireplumber pulseaudio-utils \
     xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit \
     NetworkManager network-manager-applet bluez blueman \
-    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify \
+    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify file \
     wf-recorder /usr/bin/ffmpeg \
     google-noto-sans-fonts google-noto-color-emoji-fonts \
     adwaita-icon-theme adwaita-cursor-theme dconf \
@@ -118,9 +120,10 @@ set $browser librewolf # Change default browser
 3. Move the dotfiles into your home folder:
 ```bash
 cd SARBS # Or wherever you cloned the repo
-mkdir -p ~/.config ~/.local/bin
+mkdir -p ~/.config ~/.local/bin ~/.local/share
 cp -a .config/. ~/.config/
 cp -a .local/bin/. ~/.local/bin/
+ln -s ~/.config/sway/wallpaper.jpg ~/.local/share/bg
 ```
 
 4. If `~/.sway/config` exists, move or remove it. Otherwise sway will keep using it instead of `~/.config/sway/config`.
@@ -183,11 +186,17 @@ On top of the default sway bindings, this theme adds:
 | `mod + shift + Print` / `mod + Delete` | Stop the recording |
 | `mod + Escape` / `mod + shift + Escape` | Dismiss the newest / all notifications |
 | `Print` | Screenshot of all screens, saved to `~/Pictures` |
-| `shift + Print` | Screenshot of an area you select, saved to `~/Pictures` |
-| `ctrl + Print` / `ctrl + shift + Print` | The same, but copied to the clipboard |
+| `shift + Print` | Screenshot menu: a selected area, the focused window or all screens, saved to `~/Pictures` or copied to the clipboard (`grimpick`). With tesseract installed it can also copy the text in an area |
+| `ctrl + Print` / `ctrl + shift + Print` | Screenshot of all screens / a selected area, copied to the clipboard |
 | Play, next and previous keys | Control music and video players (playerctl) |
 
 To make room for these, `mod + w` no longer switches to tabbed layout, `mod + s` no longer switches to stacking layout, and the `mod + r` resize mode is gone.
+
+## Scripts
+
+Besides the menus in the key bindings, `~/.local/bin` has:
+- `setbg`: `setbg image.jpg` sets the wallpaper, `setbg folder` picks a random image from a folder. Sway shows the image `~/.local/share/bg` links to, so the choice stays after a restart.
+- `sound-fix`: when the volume shows no sound card ("Dummy Output") on a laptop with Intel sound, the SOF driver may not work. Run `sound-fix` in a terminal: it checks whether that's the case and offers to switch to the older HDA driver (the built-in digital microphones don't work with it). Reboot afterwards. `sound-fix sof` switches back.
 
 ## Screen locking
 
@@ -199,31 +208,33 @@ Sway sets the Adwaita cursor, and sets GTK apps such as Thunar and LibreWolf's d
 
 ## Notifications
 
-mako shows notifications in the top right corner, with a yellow border, or a red one for critical notifications. They disappear after 5 seconds; critical ones stay until you dismiss them. Click a notification or press `mod + Escape` to dismiss the newest one, or `mod + shift + Escape` to dismiss all of them. The config is in `~/.config/mako/config`. Run `makoctl reload` after changing it.
+mako shows notifications in the top right corner, with a concrete border, or a brick-red one for critical notifications. They disappear after 5 seconds; critical ones stay until you dismiss them. Click a notification or press `mod + Escape` to dismiss the newest one, or `mod + shift + Escape` to dismiss all of them. The config is in `~/.config/mako/config`. Run `makoctl reload` after changing it.
 
 ## Status bar
 
-Sway starts Waybar (`swaybar_command waybar`) instead of swaybar. It is a minimal, plain text bar in the style of dwm and slstatus: workspaces and the binding mode on the left, and on the right the wifi connection, a red `rec`, `mic` or `cam` while `wmenurecord` is recording, the volume (click it to mute), the battery (on laptops), memory use, the date, the current time (`HH:MM:SS`), split by `|`, and the system tray with the wifi and Bluetooth icons. The config is in `~/.config/waybar/config.jsonc` and the colors are in `~/.config/waybar/style.css`.
+Sway starts Waybar (`swaybar_command waybar`) instead of swaybar. It is a flat strip that floats 10px below the top of the screen, lined up with the windows, with a thin concrete line along its bottom. Waybar reserves that space, so windows never go underneath it and keep the same 10px gap. On the left are the workspaces, the binding mode and the focused window's title; on the right the wifi connection, a brick-red `REC`, `MIC` or `CAM` while `wmenurecord` is recording, the volume (click it to mute), the battery (on laptops), memory use, the date and the time, each with a small grey label and split by `/`, and the system tray with the wifi and Bluetooth icons. The config is in `~/.config/waybar/config.jsonc` and the colors are in `~/.config/waybar/style.css`.
 
 ## Palette
 
-| Role | Color |
-|---|---|
-| Background (hard) | `#1D2021` |
-| Background | `#282828` |
-| Background 1 | `#3C3836` |
-| Background 2 | `#504945` |
-| Foreground | `#EBDBB2` |
-| Gray | `#928374` |
-| Red | `#FB4934` |
-| Green | `#B8BB26` |
-| Yellow | `#FABD2F` |
-| Blue | `#83A598` |
-| Purple | `#D3869B` |
-| Aqua | `#8EC07C` |
-| Orange | `#FE8019` |
+Monolith is made for SARBS: black, greys and white, with one accent, the concrete of the wallpaper's blocks. The code and terminal colors are greys with a faint tint from the same photo, told apart mostly by brightness, so they stay calm without looking alike.
+
+| Role | Color | Used for |
+|---|---|---|
+| Background | `#121212` | Bar, terminal, menus, notifications, Neovim and Helix |
+| Border | `#2a2a2a` | Unfocused windows |
+| Muted | `#7a7a7a` | Bar labels, window title, operators |
+| Text | `#d0d0d0` | Bar and terminal text |
+| Accent: concrete | `#8a7d74` | Focused window, active workspace, the line under the bar, wmenu, notifications |
+| Keyword | `#9a9a9a` | Keywords (bold) |
+| String: dusk sky | `#c2aeb0` | Strings |
+| Number: mauve | `#a99bb0` | Numbers and constants |
+| Type: storm clouds | `#8b97ab` | Types |
+| Preprocessor | `#a39184` | `#include`, macros and attributes |
+| Warning: the ledge | `#b3a48a` | Warnings |
+| Error: brick | `#a8665e` | Errors, recording, critical notifications |
+
+The colors are set in each program's own config: `~/.config/sway/config` (window borders and wmenu), `~/.config/waybar/style.css` and `config.jsonc` (the bar labels), `~/.config/foot/foot.ini` (the 16 terminal colors), `~/.config/mako/config`, `~/.config/swaylock/config`, `~/.config/swaynag/config`, the menu scripts in `~/.local/bin`, `~/.config/nvim/colors/monolith.lua` and `~/.config/helix/themes/monolith.toml`. The script doesn't install [Helix](https://helix-editor.com); its theme is used once you do.
 
 ## Credits
-- Wallpaper [gruvbox wallpapers](https://gruvbox-wallpapers.pages.dev/)
-- Gruvbox palette: [morhetz/gruvbox](https://github.com/morhetz/gruvbox)
-- `sysact`, `displayselect` and `wmenurecord` are Wayland versions of `sysact`, `displayselect` and `dmenurecord` in Luke Smith's [voidrice](https://github.com/LukeSmithxyz/voidrice) (from [LARBS](https://larbs.xyz))
+- Wallpaper: [a reflection of a building in a body of water](https://unsplash.com/photos/a-reflection-of-a-building-in-a-body-of-water-1jyHQxBAE7A) on Unsplash
+- `sysact`, `displayselect`, `wmenurecord`, `grimpick` and `setbg` are Wayland versions of `sysact`, `displayselect`, `dmenurecord`, `maimpick` and `setbg` in Luke Smith's [voidrice](https://github.com/LukeSmithxyz/voidrice) (from [LARBS](https://larbs.xyz))

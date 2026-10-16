@@ -1,0 +1,81 @@
+#!/bin/sh
+# Fixes the "Dummy Output" you get on laptops where the SOF sound driver
+# doesn't work, by switching to the older HDA driver. The built-in digital
+# microphones don't work with that driver. A switch needs a reboot.
+#   sound-fix         checks, and offers the switch when it is needed
+#   sound-fix status  shows the driver and the default output
+#   sound-fix hda     uses the older HDA driver
+#   sound-fix sof     uses SOF again
+
+conf=/etc/modprobe.d/legacy-hda.conf
+
+driver() {
+    if [ -d /sys/module/snd_sof ]; then
+        echo SOF
+    elif [ -d /sys/module/snd_hda_intel ]; then
+        echo HDA
+    else
+        echo none
+    fi
+}
+
+# PipeWire's name for the default output: alsa_output.* for a sound card,
+# auto_null for the Dummy Output
+default_output() {
+    wpctl inspect @DEFAULT_AUDIO_SINK@ 2> /dev/null \
+        | sed -n 's/.* node\.name = "\(.*\)"/\1/p' | head -n 1
+}
+
+use_hda() {
+    echo 'options snd-intel-dspcfg dsp_driver=1' | sudo tee "$conf" > /dev/null || exit 1
+    echo "Wrote $conf. Reboot to use the older HDA driver."
+}
+
+use_sof() {
+    if [ ! -e "$conf" ]; then
+        echo "SOF is already selected ($conf doesn't exist)."
+        return
+    fi
+    sudo rm "$conf" || exit 1
+    echo "Removed $conf. Reboot to use SOF."
+}
+
+case ${1-} in
+    status)
+        echo "Driver: $(driver)$([ -e "$conf" ] && echo ", older HDA driver selected in $conf")"
+        echo "Default output: $(default_output)"
+        ;;
+    hda) use_hda ;;
+    sof) use_sof ;;
+    "")
+        if ! pgrep -u "$(id -u)" -x pipewire > /dev/null; then
+            echo "PipeWire isn't running. Run this from your sway session." >&2
+            exit 1
+        fi
+        out=$(default_output)
+        case $out in
+            alsa_output*)
+                echo "Sound works: the default output is $out."
+                exit 0
+                ;;
+        esac
+        if [ "$(driver)" != SOF ]; then
+            echo "No sound card output (${out:-none}), but the SOF driver isn't in use, so this fix doesn't apply."
+            [ -e "$conf" ] && echo "To go back to SOF: sound-fix sof"
+            exit 1
+        fi
+        echo "The SOF driver is in use, but there is no sound card output (${out:-none})."
+        echo "The older HDA driver usually fixes that, but the built-in digital"
+        echo "microphones don't work with it."
+        printf 'Switch to the older HDA driver? [Y/n] '
+        read -r answer
+        case $answer in
+            [nN]*) exit 0 ;;
+        esac
+        use_hda
+        ;;
+    *)
+        awk 'NR > 1 && !/^#/ { exit } NR > 1 { sub(/^# ?/, ""); print }' "$0"
+        exit 1
+        ;;
+esac

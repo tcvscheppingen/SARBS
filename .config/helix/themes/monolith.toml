@@ -1,0 +1,119 @@
+# Monolith: black, greys and white with one concrete accent, the SARBS
+# palette. Greys with faint tints taken from the wallpaper: dusk sky for
+# strings, storm clouds for types, concrete for the preprocessor. The same
+# colors are in foot, Waybar, mako and Neovim (~/.config/nvim/colors/monolith.lua).
+
+# Syntax: structure in greys (bold keywords, white functions, dark comments),
+# data in muted tints
+"comment" = { fg = "comment", modifiers = ["italic"] }
+"constant" = "number"
+"constant.character.escape" = "water"
+"constant.numeric" = "number"
+"string" = "string"
+"string.regexp" = "water"
+"variable" = "fg"
+"variable.builtin" = "number"
+"variable.parameter" = "fg"
+"variable.other.member" = "fg"
+"function" = "fg_bright"
+"function.builtin" = "type"
+"function.macro" = "preproc"
+"keyword" = { fg = "keyword", modifiers = ["bold"] }
+"keyword.directive" = "preproc"
+"keyword.storage" = { fg = "keyword", modifiers = ["bold"] }
+"operator" = "muted"
+"punctuation" = "muted"
+"type" = "type"
+"type.builtin" = "type"
+"constructor" = "type"
+"namespace" = "fg"
+"attribute" = "preproc"
+"label" = { fg = "keyword", modifiers = ["bold"] }
+"special" = "water"
+"tag" = { fg = "keyword", modifiers = ["bold"] }
+
+"markup.heading" = { fg = "fg_bright", modifiers = ["bold"] }
+"markup.list" = "keyword"
+"markup.bold" = { modifiers = ["bold"] }
+"markup.italic" = { modifiers = ["italic"] }
+"markup.strikethrough" = { modifiers = ["crossed_out"] }
+"markup.link.url" = { fg = "string", modifiers = ["underlined"] }
+"markup.link.text" = "type"
+"markup.quote" = { fg = "comment", modifiers = ["italic"] }
+"markup.raw" = "string"
+
+"diff.plus" = "green"
+"diff.minus" = "error"
+"diff.delta" = "type"
+
+# Editor
+"ui.background" = { bg = "bg" }
+"ui.text" = "fg"
+"ui.text.focus" = { fg = "fg_bright", bg = "bg2" }
+"ui.text.inactive" = "comment"
+"ui.linenr" = "line_nr"
+"ui.linenr.selected" = { fg = "accent", modifiers = ["bold"] }
+"ui.cursor" = { fg = "bg", bg = "muted" }
+"ui.cursor.primary" = { fg = "bg", bg = "fg" }
+"ui.cursor.match" = { fg = "fg_bright", bg = "bg3", modifiers = ["bold"] }
+"ui.cursorline.primary" = { bg = "bg1" }
+"ui.selection" = { bg = "selection" }
+"ui.selection.primary" = { bg = "selection" }
+"ui.highlight" = { bg = "bg2" }
+"ui.virtual.whitespace" = "bg3"
+"ui.virtual.indent-guide" = "bg2"
+"ui.virtual.ruler" = { bg = "bg1" }
+"ui.virtual.inlay-hint" = "comment"
+"ui.virtual.jump-label" = { fg = "bg", bg = "accent", modifiers = ["bold"] }
+"ui.window" = "bg3"
+"ui.gutter" = { bg = "bg" }
+
+"ui.statusline" = { fg = "fg", bg = "bg2" }
+"ui.statusline.inactive" = { fg = "muted", bg = "bg1" }
+"ui.statusline.normal" = { fg = "bg", bg = "accent", modifiers = ["bold"] }
+"ui.statusline.insert" = { fg = "bg", bg = "fg", modifiers = ["bold"] }
+"ui.statusline.select" = { fg = "bg", bg = "type", modifiers = ["bold"] }
+"ui.bufferline" = { fg = "muted", bg = "bg1" }
+"ui.bufferline.active" = { fg = "bg", bg = "accent", modifiers = ["bold"] }
+
+"ui.popup" = { fg = "fg", bg = "bg1" }
+"ui.popup.info" = { fg = "fg", bg = "bg1" }
+"ui.help" = { fg = "fg", bg = "bg1" }
+"ui.menu" = { fg = "fg", bg = "bg1" }
+"ui.menu.selected" = { fg = "bg", bg = "accent", modifiers = ["bold"] }
+"ui.menu.scroll" = { fg = "grey", bg = "bg2" }
+
+"error" = "error"
+"warning" = "warning"
+"info" = "type"
+"hint" = "water"
+"diagnostic.error" = { underline = { color = "error", style = "curl" } }
+"diagnostic.warning" = { underline = { color = "warning", style = "curl" } }
+"diagnostic.info" = { underline = { color = "type", style = "curl" } }
+"diagnostic.hint" = { underline = { color = "water", style = "curl" } }
+"diagnostic.unnecessary" = { modifiers = ["dim"] }
+"diagnostic.deprecated" = { modifiers = ["crossed_out"] }
+
+[palette]
+bg = "#121212"
+bg1 = "#1e1e1e"
+bg2 = "#2a2a2a"
+bg3 = "#3a3a3a"
+line_nr = "#424242"
+grey = "#4a4a4a"
+comment = "#5a5a5a"
+muted = "#7a7a7a"
+keyword = "#9a9a9a"
+fg = "#d0d0d0"
+fg_bright = "#ececec"
+
+accent = "#8a7d74"
+selection = "#3a3633"
+string = "#c2aeb0"
+number = "#a99bb0"
+type = "#8b97ab"
+preproc = "#a39184"
+green = "#9aa391"
+water = "#8c9c9e"
+warning = "#b3a48a"
+error = "#a8665e"

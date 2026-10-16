@@ -1,9 +1,11 @@
-@define-color bg0      #282828;
-@define-color fg       #ebdbb2;
-@define-color gray     #928374;
-@define-color aqua     #8ec07c;
-@define-color red      #fb4934;
-@define-color dyellow  #d79921;
+/* Monolith: a flat strip floating above the windows, with a 2px concrete
+ * rule along the bottom. The grey labels and slashes are in config.jsonc. */
+@define-color bg      #121212;
+@define-color border  #2a2a2a;
+@define-color muted   #7a7a7a;
+@define-color fg      #d0d0d0;
+@define-color accent  #8a7d74;
+@define-color error   #a8665e;
 
 * {
     font-family: "JetBrainsMono Nerd Font";
@@ -18,54 +20,70 @@
 }
 
 window#waybar {
-    background-color: @bg0;
+    background-color: @bg;
+    border-bottom: 2px solid @accent;
     color: @fg;
 }
 
 #workspaces button {
-    padding: 0 7px;
+    padding: 3px 9px;
     background: none;
-    color: @gray;
+    color: @muted;
 }
 
 #workspaces button:hover {
-    background: none;
+    background: @border;
     color: @fg;
 }
 
 #workspaces button.focused {
-    background-color: @dyellow;
-    color: @bg0;
+    background-color: @accent;
+    color: @bg;
+    font-weight: bold;
 }
 
 #workspaces button.urgent {
-    background-color: @fg;
-    color: @bg0;
+    background-color: @error;
+    color: @bg;
 }
 
 #mode {
-    padding: 0 7px;
-    color: @aqua;
+    padding: 0 9px;
+    background-color: @border;
+    color: @fg;
+}
+
+#window {
+    padding: 0 12px;
+    color: @muted;
 }
 
 #network,
+#custom-recording,
 #pulseaudio,
 #battery,
 #memory,
 #clock {
-    padding-right: 7px;
+    padding: 0 9px;
 }
 
 #custom-recording {
-    padding-right: 7px;
-    color: @red;
+    color: @error;
+}
+
+#battery.warning {
+    color: @accent;
+}
+
+#battery.critical {
+    color: @error;
 }
 
 #tray {
-    padding: 0 7px 0 0;
+    padding: 0 12px 0 6px;
 }
 
 #tray menu {
-    background-color: @bg0;
+    background-color: @bg;
     color: @fg;
 }

@@ -10,23 +10,20 @@ set $term foot
 set $browser librewolf
 set $filemanager thunar
 set $menu wmenu-run -i -f 'JetBrainsMono Nerd Font 10' \
-    -N 282828 -n ebdbb2 \
-    -M d79921 -m 282828 \
-    -S fabd2f -s 282828
+    -N 121212 -n d0d0d0 \
+    -M 8a7d74 -m 121212 \
+    -S 8a7d74 -s 121212
 
-### Gruvbox palette
+### Monolith palette: black, greys and white, with one concrete accent taken
+### from the wallpaper
 
-set $bg0_hard #1d2021
-set $bg0      #282828
-set $bg1      #3c3836
-set $bg2      #504945
-set $fg       #ebdbb2
-set $gray     #928374
-set $red      #fb4934
-set $yellow   #fabd2f
-set $orange   #fe8019
-set $aqua     #8ec07c
-set $dyellow  #d79921
+set $bg      #121212
+set $border  #2a2a2a
+set $grey    #4a4a4a
+set $muted   #7a7a7a
+set $fg      #d0d0d0
+set $accent  #8a7d74
+set $error   #a8665e
 
 ### Appearance
 
@@ -34,7 +31,8 @@ font pango:JetBrainsMono Nerd Font 10
 
 # Sway adds the inner gap to the outer gaps at the screen edges, so this gives
 # 10px between windows, 30px at the left and right edges and 10px at the top
-# and bottom.
+# and bottom. Waybar floats 10px from the top with the same 30px at the sides,
+# and reserves its space, so windows stay 10px below it.
 gaps inner 10
 gaps horizontal 20
 gaps vertical 0
@@ -42,13 +40,13 @@ gaps vertical 0
 default_border pixel 3
 default_floating_border pixel 3
 
-# class                 border    background text   indicator child_border
-client.focused          $dyellow  $dyellow   $bg0   $orange   $dyellow
-client.focused_inactive $bg2      $bg2       $fg    $bg2      $bg2
-client.unfocused        $bg1      $bg1       $gray  $bg1      $bg1
-client.urgent           $red      $red       $bg0   $red      $red
-client.placeholder      $bg0      $bg0       $fg    $bg0      $bg0
-client.background       $bg0
+# class                 border   background text   indicator child_border
+client.focused          $accent  $accent    $bg    $fg       $accent
+client.focused_inactive $grey    $grey      $fg    $grey     $grey
+client.unfocused        $border  $border    $muted $border   $border
+client.urgent           $error   $error     $bg    $error    $error
+client.placeholder      $bg      $bg        $fg    $bg       $bg
+client.background       $bg
 
 bindsym $mod+n border pixel 3
 bindsym $mod+m border normal
@@ -66,8 +64,8 @@ exec_always {
 
 ### Output configuration
 
-# Uses wallpaper from dotfiles repository.
-output * bg ~/.config/sway/wallpaper.jpg fill
+# ~/.local/share/bg links to the wallpaper; setbg changes the link
+output * bg ~/.local/share/bg fill
 # Get output names with: swaymsg -t get_outputs
 #   output HDMI-A-1 resolution 1920x1080 position 1920,0
 
@@ -185,7 +183,7 @@ bindsym --locked XF86AudioNext exec playerctl next
 bindsym --locked XF86AudioPrev exec playerctl previous
 
 bindsym Print exec grim
-bindsym Shift+Print exec grim -g "$(slurp)"
+bindsym Shift+Print exec ~/.local/bin/grimpick
 bindsym Ctrl+Print exec grim - | wl-copy
 bindsym Ctrl+Shift+Print exec grim -g "$(slurp)" - | wl-copy
 bindsym $mod+Print exec ~/.local/bin/wmenurecord

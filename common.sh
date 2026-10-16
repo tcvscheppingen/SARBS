@@ -9,7 +9,7 @@ if [ "$(id -u)" -eq 0 ]; then
     exit 1
 fi
 
-BACKUP_DIR="$HOME/.config/gruvbox-rice-backup-$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR="$HOME/.config/sarbs-backup-$(date +%Y%m%d-%H%M%S)"
 
 # Packages for Arch and Artix. Artix has all of them in its own repos except
 # wmenu, which comes from Arch's [extra]. pipewire-jack answers pacman's
@@ -20,7 +20,7 @@ ARCH_PACKAGES=(
     pipewire pipewire-pulse pipewire-jack wireplumber libpulse
     xdg-desktop-portal-wlr xdg-desktop-portal-gtk lxqt-policykit
     networkmanager network-manager-applet bluez bluez-utils blueman
-    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify
+    grim slurp wl-clipboard xdg-user-dirs brightnessctl playerctl jq libnotify file
     wf-recorder ffmpeg
     ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
     adwaita-icon-theme adwaita-cursors dconf
@@ -35,7 +35,7 @@ backup() {
 
 # Back up the configs this theme replaces, then copy the dotfiles into ~/.config
 install_dotfiles() {
-    for dir in sway waybar mako foot swaylock swaynag nvim; do
+    for dir in sway waybar mako foot swaylock swaynag nvim helix; do
         if [ -e "$HOME/.config/$dir" ]; then
             backup "$HOME/.config/$dir"
         fi
@@ -58,6 +58,13 @@ install_dotfiles() {
     done
     mkdir -p "$HOME/.local/bin"
     cp -a "$REPO_DIR/.local/bin/." "$HOME/.local/bin/"
+
+    # sway shows the wallpaper ~/.local/share/bg links to, and setbg changes
+    # the link. Keep a wallpaper you already chose with setbg.
+    mkdir -p "$HOME/.local/share"
+    if [ ! -e "$HOME/.local/share/bg" ]; then
+        ln -sf "$HOME/.config/sway/wallpaper.jpg" "$HOME/.local/share/bg"
+    fi
 
     fc-cache -f
 }
@@ -99,7 +106,7 @@ add_tty_login() {
         return
     fi
     [ -e "$profile" ] && backup "$profile"
-    printf '\n# Start sway on TTY1 (added by the Gruvbox sway rice)\n%s\n' "$snippet" >> "$profile"
+    printf '\n# Start sway on TTY1 (added by SARBS)\n%s\n' "$snippet" >> "$profile"
     echo "Added sway to $profile"
 }
 
@@ -127,13 +134,13 @@ current_display_manager() {
     fi
 }
 
-# LightDM with a minimal gruvbox greeter: the wallpaper, a login box in dark
+# LightDM with a minimal greeter: the wallpaper, a login box in dark
 # Adwaita and a panel with only the host name, clock and power menu. The sway
 # package has the session file (/usr/share/wayland-sessions/sway.desktop),
 # which also sets XDG_CURRENT_DESKTOP=sway for the portals.
 add_display_manager() {
     local current
-    echo "Installing LightDM with a minimal gruvbox greeter"
+    echo "Installing LightDM with a minimal greeter"
     if grep -qs '^ID=artix' /etc/os-release; then
         sudo pacman -S --needed --noconfirm lightdm lightdm-gtk-greeter lightdm-dinit gnome-themes-extra
     elif command -v pacman > /dev/null; then
@@ -143,14 +150,14 @@ add_display_manager() {
     fi
 
     # The greeter runs as the lightdm user, which can't read your home folder
-    sudo install -Dm644 "$REPO_DIR/.config/sway/wallpaper.jpg" /usr/share/backgrounds/gruvbox-rice/wallpaper.jpg
+    sudo install -Dm644 "$REPO_DIR/.config/sway/wallpaper.jpg" /usr/share/backgrounds/sarbs/wallpaper.jpg
     if [ -e /etc/lightdm/lightdm-gtk-greeter.conf ]; then
         backup /etc/lightdm/lightdm-gtk-greeter.conf
     fi
     sudo tee /etc/lightdm/lightdm-gtk-greeter.conf > /dev/null << 'EOF'
-# Minimal gruvbox greeter (Gruvbox sway rice)
+# Minimal greeter (SARBS)
 [greeter]
-background = /usr/share/backgrounds/gruvbox-rice/wallpaper.jpg
+background = /usr/share/backgrounds/sarbs/wallpaper.jpg
 user-background = false
 transition-type = none
 theme-name = Adwaita-dark
@@ -162,8 +169,8 @@ indicators = ~host;~spacer;~clock;~spacer;~power
 clock-format = %a %d %b  %H:%M
 EOF
     sudo mkdir -p /etc/lightdm/lightdm.conf.d
-    printf '# Gruvbox sway rice\n[Seat:*]\ngreeter-session=lightdm-gtk-greeter\nuser-session=sway\n' \
-        | sudo tee /etc/lightdm/lightdm.conf.d/50-gruvbox-rice.conf > /dev/null
+    printf '# SARBS\n[Seat:*]\ngreeter-session=lightdm-gtk-greeter\nuser-session=sway\n' \
+        | sudo tee /etc/lightdm/lightdm.conf.d/50-sarbs.conf > /dev/null
 
     # Two display managers would fight over the screen
     current="$(current_display_manager)"
@@ -182,7 +189,7 @@ offer_login() {
     if [ -z "$answer" ]; then
         echo "How do you want to start sway?"
         echo "  1) Automatically when you log in on TTY1 (no display manager)"
-        echo "  2) From a graphical login screen (LightDM with a minimal gruvbox greeter)"
+        echo "  2) From a graphical login screen (LightDM with a minimal greeter)"
         echo "  3) Neither, I'll start it myself"
         read -r -p "Choice [3]: " answer || true
     fi
