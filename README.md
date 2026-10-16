@@ -1,6 +1,6 @@
 # Sway Auto Rice Bootstrapping Script (SARBS)
 
-![sway with Neovim, fastfetch and a shell](screenshot.png)
+![sway with Neovim and fastfetch floating beside the concrete blocks of the wallpaper](screenshot.png)
 
 My dotfiles for sway, Waybar, foot, mako, wmenu, swaylock and swaynag, with Neovim and Helix themes. Everything uses **Monolith**: a flat, mostly black, grey and white palette with one concrete accent, made around the brutalist wallpaper. It sticks to sway's own tools: wmenu instead of rofi, and the default sway key bindings with a few additions.
 
