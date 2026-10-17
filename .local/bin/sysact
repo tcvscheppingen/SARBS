@@ -15,13 +15,8 @@ else
 fi
 
 lock() {
-    was_muted=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -c MUTED)
     playerctl --all-players pause 2> /dev/null
-    wpctl set-mute @DEFAULT_AUDIO_SINK@ 1
     swaylock
-    if [ "$was_muted" -eq 0 ]; then
-        wpctl set-mute @DEFAULT_AUDIO_SINK@ 0
-    fi
 }
 
 # Turn the displays off until the next key press or mouse movement. $PPID
